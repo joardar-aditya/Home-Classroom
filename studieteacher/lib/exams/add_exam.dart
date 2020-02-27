@@ -45,16 +45,10 @@ class _state_add_exam extends State<add_exam>{
         title: Text("Add Exam", style: TextStyle(color: Color(0xff261FFF), fontSize: 24, fontWeight: FontWeight.bold),),
         elevation: 0.0,
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
         children: <Widget>[
-          FittedBox(fit:BoxFit.contain,child:
-          Container(
-            width: 200,
-            margin: EdgeInsets.symmetric(horizontal:10,vertical: 10),
-            child: RaisedButton(
+          Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+          Container(margin:EdgeInsets.all(10),child:SizedBox(width: 200, height:50, child:RaisedButton(
               onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => add_exam()));},
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               color:Colors_pack.color,
@@ -65,8 +59,9 @@ class _state_add_exam extends State<add_exam>{
                   Text('Select a Date', style: TextStyle(color: Colors.white, fontSize: 20),),)],
               ),
             ),
-          )),
-          FittedBox(fit:BoxFit.contain, child:
+          ))]),
+            Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+            SizedBox(width:200,height:70,child:
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey[400],
@@ -75,12 +70,9 @@ class _state_add_exam extends State<add_exam>{
               margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(10),
               child: Center(
-                child: Text('1 JAN MON 2020', style: TextStyle(color: Colors_pack.color),),
+                child: Text('1 JAN MON 2020', style: TextStyle(color: Colors_pack.color, fontSize: 18),),
               ),
-            ),
-
-          ),
-          Flexible(flex:2,child:
+            ))]),
           Container(
               margin: EdgeInsets.all(10),
               child:
@@ -150,27 +142,84 @@ class _state_add_exam extends State<add_exam>{
 
 
             ],
-          ))
-          ),
-          Flexible(flex:1,child:
+          )),
           Container(
             margin: EdgeInsets.all(10),
-            child: Text('Exam Title', style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold),),
-          )),
-          Flexible(
-            child:FittedBox(fit:BoxFit.contain,child: Container(
-              height: 100,
-              width: 500,
-              margin:EdgeInsets.all(10),child:TextField(
+            child: Text('Exam Title', style: TextStyle(color: Colors.black, fontSize: ScreenUtil().setSp(64), fontWeight: FontWeight.bold),),
+          ),
+        Container(
+              height: ScreenUtil().setHeight(150),
+              margin:EdgeInsets.all(10),child:TextFormField(
               decoration: InputDecoration(
                 fillColor: Colors.grey[300],
                 filled: true,
                 hintText: "Add a title",
-                hintStyle: TextStyle(color: Colors.pinkAccent),
+                hintStyle: TextStyle(color: Colors.pinkAccent, fontSize:ScreenUtil().setSp(48)),
                 border: OutlineInputBorder(borderSide: BorderSide(width:0.0, style: BorderStyle.none),borderRadius: BorderRadius.circular(10))
               ),
             ),
-          )))
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            child: Text('Choose a subject', style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold),),
+          ),
+         Container(
+            margin: EdgeInsets.all(10),
+            child: RaisedButton(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                color:Colors_pack.color, disabledColor: Colors_pack.color, child:
+            Container(alignment:Alignment.centerLeft,child:Text('Not Selected', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),))),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            child: Text('Add Syllabus', style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold),),
+          ),
+          Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+            Container(margin:EdgeInsets.all(10),child:SizedBox(width: 200, height:50, child:RaisedButton(
+              onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => add_exam()));},
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              color:Colors_pack.color,
+              disabledColor: Colors_pack.color,
+              child: Row(
+                children: <Widget>[Icon(Icons.add, color: Colors.white,size: 20,),
+                  Container(margin: EdgeInsets.symmetric(horizontal:5),child:
+                  Text('Add Chapters', style: TextStyle(color: Colors.white, fontSize: 20),),)],
+              ),
+            ),
+            ))]),
+      ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 1000),
+          child:
+        ListView.builder(shrinkWrap:true, physics:NeverScrollableScrollPhysics(),itemCount:4,itemBuilder: (context, item) {
+              return Container(
+                child:Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      child:Text('Trigonometry', style: TextStyle(color:Colors.pinkAccent, fontSize: 24, fontWeight: FontWeight.bold),)
+                    ),
+                    Container(
+                      height: ScreenUtil().setHeight(150),
+                      margin:EdgeInsets.all(10),child:TextFormField(
+                      decoration: InputDecoration(
+                          fillColor: Colors.grey[300],
+                          filled: true,
+                          hintText: "Add a Description",
+                          hintStyle: TextStyle(color: Colors.pinkAccent, fontSize:ScreenUtil().setSp(48)),
+                          border: OutlineInputBorder(borderSide: BorderSide(width:0.0, style: BorderStyle.none),borderRadius: BorderRadius.circular(10))
+                      ),
+                    ),
+                    ),
+
+                  ],
+                )
+              );
+            }
+          ))
+
+
+
         ],
       ),
 

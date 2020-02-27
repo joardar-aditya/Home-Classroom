@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:studieteacher/sign_in.dart';
 
 void main() => runApp(MyApp());
@@ -7,6 +8,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -55,6 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    ScreenUtil.init(context, width: 1080, height: 2280, allowFontScaling: true);
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
