@@ -166,7 +166,7 @@ class _attendanceState extends State<attendance> {
 
             ],
           )),
-          Container(height:400,padding:EdgeInsets.only(top:30),child:
+          Container(height:460,padding:EdgeInsets.only(top:30),child:
           Calendarro(
                 displayMode: DisplayMode.MONTHS,
                 dayTileBuilder: customTileday(),

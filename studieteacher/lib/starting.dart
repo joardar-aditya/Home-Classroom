@@ -4,6 +4,7 @@ import 'package:studieteacher/Homework/homework.dart';
 import 'package:studieteacher/exams/exams_start.dart';
 import 'package:studieteacher/intro_button.dart';
 import 'package:studieteacher/attendance.dart';
+import 'package:studieteacher/quiz/quizstart.dart';
 
 
 class starting extends StatefulWidget {
@@ -104,7 +105,7 @@ class _startingState extends State<starting> {
                      disabledColor: Colors.white,splashColor: Colors.blue,)),
                      Flexible(child:RaisedButton(
                            child: intro_button("assets/Group10.png", "Quiz"),
-                           onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => attendance()));},
+                           onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) =>  quizstart()));},
                            color: Colors.white, disabledColor: Colors.white,splashColor: Colors.blue,)),
                      Flexible(child:RaisedButton(
                        elevation: 0.0,
