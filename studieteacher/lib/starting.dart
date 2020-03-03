@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:studieteacher/Announce/announce.dart';
 import 'package:studieteacher/Homework/homework.dart';
+import 'package:studieteacher/document/document.dart';
 import 'package:studieteacher/exams/exams_start.dart';
 import 'package:studieteacher/intro_button.dart';
 import 'package:studieteacher/attendance.dart';
@@ -138,7 +140,7 @@ class _startingState extends State<starting> {
                          elevation: 0.0,
                          child:
                          intro_button("assets/documents.png", "Documents"),
-                         onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => attendance()));},
+                         onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => document()));},
                          color: Colors.white,
                          disabledColor: Colors.white,splashColor: Colors.blue,)),
                      ])),
@@ -166,7 +168,7 @@ class _startingState extends State<starting> {
                          elevation: 0.0,
                          child:
                          intro_button("assets/announce.png", "Announce"),
-                         onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => attendance()));},
+                         onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => announce()));},
                          color: Colors.white,
                          disabledColor: Colors.white,splashColor: Colors.blue,)),
                      ])),
