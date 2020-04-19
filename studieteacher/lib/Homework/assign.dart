@@ -1,8 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:calendarro/date_utils.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:studieteacher/Homework/hw.dart';
 import 'package:studieteacher/colors/colors.dart';
 import 'package:calendarro/calendarro.dart';
+import 'package:studieteacher/models/hw_model.dart';
+import 'package:http/http.dart' as http;
+import 'package:studieteacher/models/main_model.dart';
 
 class assign extends StatefulWidget {
   @override
@@ -92,6 +102,8 @@ class _assignState extends State<assign> {
       _submitday = value;
     });
   }
+  
+  var done = false;
 
   void _changeMonth(String value) {
     setState(() {
@@ -164,39 +176,40 @@ class _assignState extends State<assign> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                 ),
               ),
-              Padding(
+              Consumer2<hw_model, main_model>(builder:(context, model, model2, child){return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: DropdownButton<String>(
-                  value: _currentClass,
-                  onChanged: (String string) => _changeClass(string),
+                  value: model2.Classes,
+                  onChanged: (String string) {_changeClass(string);
+                  model.changeClass(string);
+                  model2.ChangeClasses(string);
+                  model2.getDetails();
+                  model2.getChapters();},
                   underline: Container(),
                   iconSize: 0,
                   selectedItemBuilder: (BuildContext context) {
-                    return _classes.map<Widget>((String item) {
+                    return model2.Class_list.map<Widget>((String item) {
                       return Container(
                           width: 80,
                           decoration: BoxDecoration(
                               color: Color(0xff261FFF),
                               borderRadius: BorderRadius.circular(5)),
                           child: Center(
-                            child: Text(
-                              item.toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.white),
-                            ),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
+                                  Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)])
                           ));
                     }).toList();
                   },
-                  items: _classes.map((String item) {
+                  items: model2.Class_list.map((String item) {
                     return DropdownMenuItem<String>(
                       child: Text('$item'),
                       value: item,
                     );
                   }).toList(),
-                ),
-              ),
+                )
+              );}),
             ],
           ),
           Column(
@@ -207,39 +220,37 @@ class _assignState extends State<assign> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                 ),
               ),
-              Padding(
+              Consumer2<hw_model, main_model>(builder:(context, model,model2, child){ return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: DropdownButton<String>(
-                  value: _section,
-                  onChanged: (String string) => _changeSections(string),
+                  value: model2.section,
+                  onChanged: (String string) { _changeSections(string);
+                  model.ChangeSection(string);},
                   underline: Container(),
                   iconSize: 0,
                   selectedItemBuilder: (BuildContext context) {
-                    return _sections.map<Widget>((String item) {
+                    return model2.Section_list.map<Widget>((String item) {
                       return Container(
                           width: 80,
                           decoration: BoxDecoration(
                               color: Color(0xff261FFF),
                               borderRadius: BorderRadius.circular(5)),
                           child: Center(
-                            child: Text(
-                              item.toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.white),
-                            ),
+                            child:  Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
+                                  Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)]),
                           ));
                     }).toList();
                   },
-                  items: _sections.map((String item) {
+                  items: model2.Section_list.map((String item) {
                     return DropdownMenuItem<String>(
                       child: Text('$item'),
                       value: item,
                     );
                   }).toList(),
                 ),
-              ),
+              );})
             ],
           ),
           Column(
@@ -265,13 +276,10 @@ class _assignState extends State<assign> {
                               color: Color(0xff261FFF),
                               borderRadius: BorderRadius.circular(5)),
                           child: Center(
-                            child: Text(
-                              item.toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.white),
-                            ),
+                            child:  Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
+                                  Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)]),
                           ));
                     }).toList();
                   },
@@ -300,18 +308,19 @@ class _assignState extends State<assign> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                 ),
               ),
-              Container(
+              Consumer<main_model>(builder:(context, model, child){ return Container(
                 decoration: BoxDecoration(
                     color: Color(0xff261FFF),
                     borderRadius: BorderRadius.circular(5)),
                 padding: EdgeInsets.only(left: 10),
-                child: DropdownButton<String>(
-                  value: _currentSubject,
-                  onChanged: (String string) => _changeSubject(string),
+                child:Row(children:[Expanded(flex:4,child: DropdownButton<String>(
+                  value: model.Current_Subject,
+                  onChanged: (String string) {_changeSubject(string);
+                  model.ChangeSubject(string);},
                   underline: Container(),
                   iconSize: 0,
                   selectedItemBuilder: (BuildContext context) {
-                    return _subjects.map<Widget>((String item) {
+                    return model.subjects.map<Widget>((String item) {
                       return Container(
                           child: Center(
                         child: Text(
@@ -324,14 +333,14 @@ class _assignState extends State<assign> {
                       ));
                     }).toList();
                   },
-                  items: _subjects.map((String item) {
+                  items: model.subjects.map((String item) {
                     return DropdownMenuItem<String>(
                       child: Text('$item'),
                       value: item,
                     );
                   }).toList(),
-                ),
-              ),
+                )),Expanded(child:Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),))])
+              );}),
               Container(
                   margin: EdgeInsets.symmetric(vertical: 10),
                   child: Column(
@@ -347,19 +356,21 @@ class _assignState extends State<assign> {
                                 fontWeight: FontWeight.bold, fontSize: 22),
                           ),
                         ),
-                        Container(
+                        Consumer<main_model>(builder:(context, model, child){ return Container(
                           decoration: BoxDecoration(
                               color: Color(0xff261FFF),
                               borderRadius: BorderRadius.circular(5)),
                           padding: EdgeInsets.only(left: 10),
-                          child: DropdownButton<String>(
-                            value: _currentteacher,
-                            onChanged: (String string) =>
-                                _changeTeacher(string),
+                          child:Row(children: [Expanded(flex:4,child:DropdownButton<String>(
+                            value: model.current_chapter,
+                            onChanged: (String string){
+                                _changeTeacher(string);
+                                model.ChangeChapter(string);
+                                },
                             underline: Container(),
                             iconSize: 0,
                             selectedItemBuilder: (BuildContext context) {
-                              return _teachers.map<Widget>((String item) {
+                              return model.chapters.map<Widget>((String item) {
                                 return Container(
                                     child: Center(
                                   child: Text(
@@ -372,14 +383,14 @@ class _assignState extends State<assign> {
                                 ));
                               }).toList();
                             },
-                            items: _teachers.map((String item) {
+                            items: model.chapters.map((String item) {
                               return DropdownMenuItem<String>(
                                 child: Text('$item'),
                                 value: item,
                               );
                             }).toList(),
-                          ),
-                        ),
+                          )),Expanded(child:Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),))])
+                        );}),
                       ]))
             ],
           )),
@@ -395,19 +406,22 @@ class _assignState extends State<assign> {
             color: Colors.grey[300],
             borderRadius: BorderRadius.circular(20),
           ),
+          padding: EdgeInsets.all(8),
           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: Align(
               alignment: Alignment.centerLeft,
-              child: TextFormField(
+              child: Consumer<hw_model>(builder: (context, model, child) {
+                return TextFormField(
+                  onChanged: (value) {model.ChangeTitle(value);},
                 decoration: InputDecoration(
                     border: InputBorder.none,
                     focusColor: Colors.grey,
                     fillColor: Colors.grey,
-                    labelText: 'Add a title',
-                    labelStyle: TextStyle(color: Colors.pinkAccent)),
+                    hintText: 'Add a title',
+                    hintStyle: TextStyle(color: Colors.pinkAccent)),
                 autocorrect: true,
                 maxLines: 1,
-              ))),
+              );}))),
       Container(
           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: FittedBox(
@@ -425,21 +439,24 @@ class _assignState extends State<assign> {
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(20),
                           ),
+                          padding: EdgeInsets.all(8),
                           margin: EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
                           child: Align(
                               alignment: Alignment.centerLeft,
-                              child: TextFormField(
+                              child: Consumer<hw_model>(builder: (context, model, child) {
+                                return TextFormField(
+                                  onChanged: (value) {model.ChangeDesc(value);},
                                 decoration: InputDecoration(
                                     border: InputBorder.none,
                                     focusColor: Colors.grey,
                                     fillColor: Colors.grey,
-                                    labelText: 'Add description',
-                                    labelStyle:
+                                    hintText: 'Add description',
+                                    hintStyle:
                                         TextStyle(color: Colors.pinkAccent)),
                                 autocorrect: true,
                                 maxLines: 3,
-                              )))),
+                              );})))),
                   Flexible(
                       flex: 1,
                       fit: FlexFit.loose,
@@ -449,61 +466,109 @@ class _assignState extends State<assign> {
                           showDialog(
                               context: context,
                               builder: (context) {
-                                return Dialog(
+                                return Container(
+
+                                    child:Consumer<hw_model>(builder: (context, model, child){
+                                      return Dialog(
                                   backgroundColor: Colors_pack.color,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20.0),
                                       side: BorderSide.none),
-                                  child: Stack(
+                                  child: Container(child:Stack(
                                     overflow: Overflow.visible,
                                     children: <Widget>[
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
                                         mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           Flexible(
+                                              flex:5,
                                               child: Container(
-                                                  margin: EdgeInsets.symmetric(
-                                                      horizontal: 10),
+                                                 height: 70,
+                                                  width:130,
                                                   child: RaisedButton(
-                                                    child: Text(
-                                                      'Camera',
+                                                    elevation: 0.0,
+                                                    child: Column(
+                                                         mainAxisAlignment: MainAxisAlignment.center,
+                                                        children:[
+                                                      Image(image: AssetImage("assets/upload3.png"),height: 50,width: 50,),
+                                                      Text(
+                                                      'Document',
                                                       style: TextStyle(
                                                           color: Colors.white),
-                                                    ),
-                                                    onPressed: () {},
+                                                    )]),
+                                                    onPressed: () async {
+                                                         File document = await  FilePicker.getFile();
+                                                         print(document.path);
+                                                         model.ChangeFile(document);
+                                                    },
                                                     disabledColor:
                                                         Colors_pack.color,
                                                     color: Colors_pack.color,
-                                                  ))),
+                                                  ),)),
                                           Flexible(
-                                              child: Container(
-                                                  child: RaisedButton(
-                                            child: Text(
-                                              'Documents',
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                            onPressed: () {},
-                                            disabledColor: Colors_pack.color,
-                                            color: Colors_pack.color,
-                                          ))),
+                                              child:Container(
+                                                height:100,
+                                                child:Container(),
+                                              )
+                                          ),
                                           Flexible(
+                                              flex:5,
                                               child: Container(
-                                                  margin: EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                                  child: RaisedButton(
-                                                    child: Text(
-                                                      'Files',
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
-                                                    onPressed: () {},
-                                                    disabledColor:
-                                                        Colors_pack.color,
-                                                    color: Colors_pack.color,
-                                                  ))),
+                                                height: 70,
+                                                width:130,
+                                                child: RaisedButton(
+                                                  elevation: 0.0,
+                                                  child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children:[
+                                                        Image(image: AssetImage("assets/upload2.png"),height: 50,width: 50,),
+                                                        Text(
+                                                          'Camera',
+                                                          style: TextStyle(
+                                                              color: Colors.white),
+                                                        )]),
+                                                  onPressed: () async{
+                                                    File document = await  FilePicker.getFile();
+                                                    print(document.path);
+                                                    model.ChangeFile(document);
+                                                  },
+                                                  disabledColor:
+                                                  Colors_pack.color,
+                                                  color: Colors_pack.color,
+                                                ),)),
+                                          Flexible(
+                                              child:Container(
+                                                height:100,
+                                                child:Container(),
+                                              )
+                                          ),
+                                          Flexible(
+                                             flex:5,
+                                              child: Container(
+                                                height: 70,
+                                                width:100,
+                                                child: RaisedButton(
+                                                  elevation: 0.0,
+                                                  child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children:[
+                                                        Image(image: AssetImage("assets/camera_upload.png"),height: 50,width: 50,),
+                                                        Text(
+                                                          'Upload',
+                                                          style: TextStyle(
+                                                              color: Colors.white),
+                                                        )]),
+                                                  onPressed: () async{
+                                                    File document = await  FilePicker.getFile();
+                                                    print(document.path);
+                                                    model.ChangeFile(document);
+                                                  },
+                                                  disabledColor:
+                                                  Colors_pack.color,
+                                                  color: Colors_pack.color,
+                                                ),)),
+
                                         ],
                                       ),
                                       Positioned(
@@ -523,7 +588,7 @@ class _assignState extends State<assign> {
                                               )))
                                     ],
                                   ),
-                                );
+                                ));}));
                               });
                         },
                         disabledColor: Colors_pack.color,
@@ -567,13 +632,10 @@ class _assignState extends State<assign> {
                               color: Colors.grey,
                               borderRadius: BorderRadius.circular(5)),
                           child: Center(
-                            child: Text(
-                              item.toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.black),
-                            ),
+                            child:  Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.black),),
+                                  Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.black, shape: BoxShape.circle),)])
                           ));
                     }).toList();
                   },
@@ -605,18 +667,15 @@ class _assignState extends State<assign> {
                   selectedItemBuilder: (BuildContext context) {
                     return _months.map<Widget>((String item) {
                       return Container(
-                          width: 80,
+                          width: 100,
                           decoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius: BorderRadius.circular(5)),
                           child: Center(
-                            child: Text(
-                              item.toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.black),
-                            ),
+                            child:  Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.black),),
+                                  Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.black, shape: BoxShape.circle),)])
                           ));
                     }).toList();
                   },
@@ -648,18 +707,15 @@ class _assignState extends State<assign> {
                   selectedItemBuilder: (BuildContext context) {
                     return _year.map<Widget>((String item) {
                       return Container(
-                          width: 80,
+                          width: 100,
                           decoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius: BorderRadius.circular(5)),
                           child: Center(
-                            child: Text(
-                              item.toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.black),
-                            ),
+                            child:  Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.black),),
+                                  Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.black, shape: BoxShape.circle),)])
                           ));
                     }).toList();
                   },
@@ -675,12 +731,19 @@ class _assignState extends State<assign> {
           )
         ]),
       ),
-      Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+      done?Container(margin:EdgeInsets.all(20),child:Center(child:Text("Homework uploaded successfully"))):Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Container(
             margin: EdgeInsets.all(10),
             width: 200,
-            child: RaisedButton(
-                onPressed: () {},
+            child: Consumer2<hw_model, main_model>(builder: (context, model,model2, child){
+              return RaisedButton(
+                onPressed: () {
+                  int year = int.parse(_submityear);
+                  int month = _months.indexOf(_submitMonth) + 1;
+                  int day = int.parse(_submitday);
+                  model.ChangeDate(DateTime(year, month, day));
+                  uploadDocument(model.hwSub, model.hwFile, model.hwTitle, model.hwDesc, model2.Classes, model2.section, model2.Current_Subject, model2.current_chapter);
+                },
                 color: Color(0xff261FFF),
                 disabledColor: Colors.grey,
                 shape: RoundedRectangleBorder(
@@ -692,8 +755,78 @@ class _assignState extends State<assign> {
                         style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white)))))
-      ])
+                            color: Colors.white))));})
+        )])
     ]);
   }
+  void uploadDocument(DateTime submission, File filename, String title, String description, String classe, String sec, String subject, String chapter) async {
+    List<String> _months = [
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DEC"
+    ];
+
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String code = sharedPreferences.getString("user");
+    String school = sharedPreferences.getString("icode");
+    String tcode = sharedPreferences.getString("tcode");
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/homework" );
+    var request = await http.MultipartRequest('POST', uri);
+    print(filename.path);
+    var file = await http.MultipartFile.fromPath('assignment', filename.path, contentType:MediaType.parse("image/png"));
+    request.files.add(file);
+    print(file.toString());
+    request.headers["x-access-token"] = code;
+    request.headers["type"] = "teacher";
+    request.fields["tcode"] = tcode;
+    request.fields["icode"] = school;
+    request.fields["class"] = classe;
+    request.fields["sec"] = "a";
+    request.fields["subject"] = "maths";
+    request.fields["chapter"] = "Trigonometry";
+    String month = submission.month.toString();
+    String day = submission.day.toString();
+    if(submission.month<10){
+      month = "0" + submission.month.toString();
+    }
+    if(submission.day<10){
+      day = "0" + submission.day.toString();
+    }
+    request.fields["sub_date"] = submission.year.toString() + month  + day;
+    request.fields["homework"] = "{\"title\":\"$title\", \"desc\":\"$description\"}";
+    request.fields["period"] = _currentperiod;
+
+
+    print(submission.year.toString()  + month + day);
+    print("{\"title\":\"$title\", \"desc\":\"$description\"}");
+    print(chapter);
+    print(sec);
+    print(classe);
+    print(code);
+    print(submission.day.toString() + _months[submission.month-1]  + submission.year.toString());
+    print("I was called");
+    var res = await request.send();
+    var res_total  = await res.stream.bytesToString();
+    var j = jsonDecode(res_total);
+    print(j.toString());
+    print(res.statusCode);
+    if(res.statusCode==200) {
+      if(j["status"]=="success"){
+           setState(() {
+             done=true;
+           });
+        
+      }
+    }
+  }
+
 }

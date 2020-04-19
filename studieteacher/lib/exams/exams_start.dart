@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sticky_headers/sticky_headers.dart';
 import 'package:studieteacher/colors/colors.dart';
 import 'package:studieteacher/exams/add_exam.dart';
 import 'package:studieteacher/exams/exams_container.dart';
 import 'package:studieteacher/exams/exams_past_container.dart';
+import 'package:studieteacher/models/exam_details_model.dart';
 
 class exam_start extends StatefulWidget {
   @override
@@ -20,7 +23,17 @@ class _stateExam extends State<exam_start> {
   void _changeMonth(String value) {
     setState(() {
       _currentMonth = value;
+
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _currentYear = DateTime.now().year.toString();
+    _currentMonth = _months[DateTime.now().month-1];
+
   }
 
   void _changeYear(String val) {
@@ -30,27 +43,20 @@ class _stateExam extends State<exam_start> {
 
   }
 
-  static var list_now = [{"date":"1 JAN MON 2020", "name":"Class test 001", "class":"5", "sec":"A", "subject": "Mathematics"},
-    {"date":"1 JAN MON 2020", "name":"Class test 001", "class":"5", "sec":"A", "subject": "Mathematics"},
-    {"date":"1 JAN MON 2020", "name":"Class test 001", "class":"5", "sec":"A", "subject": "Mathematics"},
-    {"date":"1 JAN MON 2020", "name":"Class test 001", "class":"5", "sec":"A", "subject": "Mathematics"},
-    {"date":"1 JAN MON 2020", "name":"Class test 001", "class":"5", "sec":"A", "subject": "Mathematics"}];
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Exam & Scores", style: TextStyle(color: Color(0xff261FFF), fontSize: 24, fontWeight: FontWeight.bold),),
+      appBar:  AppBar(
         elevation: 0.0,
+        leading: RaisedButton(color:Colors.white, elevation:0.0, onPressed:() {Navigator.pop(context);},child:Image(image:AssetImage('assets/back.png'), height: 50,) ),
+        title: Text('Exam & Scores', style: TextStyle(color:Colors_pack.color, fontWeight: FontWeight.w700, fontSize: 28),),
       ),
       body:Container(
         margin: EdgeInsets.only(left: 10),
-          child: Column(
-        mainAxisAlignment:MainAxisAlignment.spaceEvenly,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
         children: <Widget>[
-          FittedBox(fit:BoxFit.contain,child:
+          Row(children:[FittedBox(fit:BoxFit.contain,child:
           Container(
             width: 200,
             margin: EdgeInsets.symmetric(vertical: 10),
@@ -65,28 +71,32 @@ class _stateExam extends State<exam_start> {
                   Text('Add an exam', style: TextStyle(color: Colors.white, fontSize: 20),),)],
               ),
             ),
-          )),
-          Flexible(flex:1,child: Container(
+          ))]),
+          Container(
+            margin:EdgeInsets.all(10),
             child:Text('Upcoming Tests', style: TextStyle(fontSize: 20),)
-          )),
-          Flexible(flex:3, child:
-          ListView.builder(scrollDirection:Axis.horizontal,itemCount:list_now.length,itemBuilder: (context, index){
-               return exam_container(list_now[index]["date"], list_now[index]["name"], list_now[index]["class"],list_now[index]["sec"],list_now[index]["subject"], false);
-          })
           ),
-          Flexible(flex:1,child: Container(
-              child:Text('Add scores to the exam', style: TextStyle(fontSize: 20),)
-          )),
-          Flexible(flex:3, child:
-          ListView.builder(scrollDirection:Axis.horizontal,itemCount:list_now.length,itemBuilder: (context, index){
-            return exam_container(list_now[index]["date"], list_now[index]["name"], list_now[index]["class"],list_now[index]["sec"],list_now[index]["subject"], true);
-          })
+
+          Consumer<exam_details_model>(builder:(context, model, child){return (model.upcoming.isEmpty)?Container(child:
+          Center(child: CircularProgressIndicator(),)):Container(
+              height:220,
+              child:ListView.builder(
+              shrinkWrap: true,
+              scrollDirection:Axis.horizontal,itemCount:model.upcoming.length,itemBuilder: (context, index){
+                //TODO:ADD SUBJECT
+                print(model.upcoming.toString());
+               return  exam_container(model.upcoming[index], model.upcoming[index].Date, model.upcoming[index].Title, model.upcoming[index].Class,model.upcoming[index].Section,"maths", false);
+          }));})
+          ,
+          Container(
+              margin: EdgeInsets.all(10),
+              child:Text('Add Scores to Exams', style: TextStyle(fontSize: 20),)
           ),
-          Flexible(flex:1,child: Container(
-              child:Text('Past Completed Exams', style: TextStyle(fontSize: 20),)
-          )),
-          Flexible(flex:1,child:
-          Container(child:
+          StickyHeader(
+              header:Container(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                  color:Colors.white,
+                  child:
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
@@ -95,21 +105,27 @@ class _stateExam extends State<exam_start> {
               Text("Month", style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 24),)),
 
               Padding(padding: EdgeInsets.symmetric(horizontal: 5),child:
-              DropdownButton<String>(
+              Consumer<exam_details_model>(builder:(context, model, child){ return  DropdownButton<String>(
                 value: _currentMonth,
-                onChanged: (String string) => _changeMonth(string),
+                onChanged: (String string) { _changeMonth(string);
+                int y = int.parse(_currentYear);
+                int m = _months.indexOf(string) +1;
+                model.PastExams(m, y);
+                },
                 underline: Container(),
                 iconSize: 0,
                 selectedItemBuilder: (BuildContext context) {
                   return _months.map<Widget>((String item) {
                     return Container(
-                        width: 80,
+                        width: 100,
                         decoration: BoxDecoration(
                             color: Color(0xff261FFF),
                             borderRadius: BorderRadius.circular(5)
                         ),
-                        child:Center(child: Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
-                        ));
+                        child:Center(child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
+                    Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)])));
                   }).toList();
                 },
                 items: _months.map((String item) {
@@ -118,26 +134,32 @@ class _stateExam extends State<exam_start> {
                     value: item,
                   );
                 }).toList(),
-              ),) ,
+              );})) ,
               Padding(padding:EdgeInsets.all(10),child:
               Text("Year", style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 24),)),
 
               Padding(padding: EdgeInsets.symmetric(horizontal: 5),child:
-              DropdownButton<String>(
+              Consumer<exam_details_model>(builder:(context, model, child){ return DropdownButton<String>(
                 value: _currentYear,
-                onChanged: (String string) => _changeYear(string),
+                onChanged: (String string) {_changeYear(string);
+                int y = int.parse(string);
+                int m = _months.indexOf(_currentMonth) + 1;
+                model.PastExams(m, y);
+                },
                 underline: Container(),
                 iconSize: 0,
                 selectedItemBuilder: (BuildContext context) {
                   return _years.map<Widget>((String item) {
                     return Container(
-                        width: 80,
+                        width: 100,
                         decoration: BoxDecoration(
                             color: Color(0xff261FFF),
                             borderRadius: BorderRadius.circular(5)
                         ),
-                        child:Center(child: Text(item.toString(), style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
-                        ));
+                        child:Center(child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
+                    Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)])));
                   }).toList();
                 },
                 items: _years.map((String item) {
@@ -146,17 +168,19 @@ class _stateExam extends State<exam_start> {
                     value: item,
                   );
                 }).toList(),
-              ),)
+              );}))
 
 
             ],
-          )),),
-          Flexible(
-            flex:4,
-            child: ListView.builder(itemCount:10,itemBuilder: (context, index){
-                  return exam_past_container();
-            }),
-          )
+          )),
+          content:
+          Consumer<exam_details_model>(builder:(context, model, child){return ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount:model.past.length,itemBuilder: (context, index){
+                  return exam_past_container(model.past[index]);
+            });})),
+
 
 
 

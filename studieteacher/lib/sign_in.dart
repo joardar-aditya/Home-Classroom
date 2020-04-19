@@ -3,150 +3,242 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:studieteacher/colors/colors.dart';
 import 'package:studieteacher/main.dart';
 import 'package:studieteacher/starting.dart';
 import 'package:http/http.dart' as http;
 
-
 class sign_in extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() => _sign_in_state();
 }
-  class _sign_in_state extends State<sign_in> {
 
+class _sign_in_state extends State<sign_in> {
   var initid;
   var studentid;
   var password;
+
+  var loading = false;
+
+  void _changeState(String token, String s, String sccode) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString("user", token);
+    sharedPreferences.setString("tcode", s);
+    sharedPreferences.setString("icode", sccode);
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com","/teacher/profile/$sccode", {
+      "code": s,
+    });
+    var res = await http.get(uri, headers: {
+      "x-access-token":token,
+      "type":"teacher"
+    });
+    var j = jsonDecode(res.body);
+    if(res.statusCode == 200){
+      print(res.body);
+      if(j["status"]=="success"){
+        sharedPreferences.setString("global_state", "yes");
+        sharedPreferences.setString("name", j["data"]["data"]["name"]);
+        sharedPreferences.setString("tid", j["data"]["id"]);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => starting()));
+
+      }else{
+        Scaffold.of(context).showSnackBar(SnackBar(content: Text('User not Found!'),));
+        setState(() {
+          loading = false;
+        });
+      }
+    }else{
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text('User not Found!'),));
+      setState(() {
+        loading = false;
+      });
+    }
+}
 
   void saveinitid(value) {
     setState(() {
       initid = value;
     });
-
   }
+
   void savestudent(value) {
     setState(() {
       studentid = value;
     });
-
   }
-  void savepass(value) {
 
+  void savepass(value) {
     setState(() {
       password = value;
     });
-
   }
 
   void login() async {
-
-
-    //var uri = Uri.https("project-student-management.appspot.com","/teacher/");
-
-
-    /*var response = await http.post(uri, headers: {
-      "type": "teacher",
-    }, body: {
-      'icode': initid,
-      'uname': studentid,
-      'pass': password,
+    setState(() {
+      loading = true;
     });
+    print("I was called");
     print(initid.toString());
     print(studentid.toString());
     print(password.toString());
+    var uri = Uri.https("studie-server-dot-project-student-management.appspot.com","/login/");
 
-    Map<String, dynamic> json = jsonDecode(response.body.toString());
-    if(json.containsKey("x-access-token")){*/
-      Navigator.push(context,MaterialPageRoute(builder: (context) => starting()));
-    /*}else{
+    var response = await http.post(uri, headers: {
+      "type": "teacher",
+    }, body: {
+      'icode': initid.toString(),
+      'uname': studentid.toString(),
+      'pass': password.toString(),
+    },);
+
+
+
+    Map<String, dynamic> json = jsonDecode(response.body);
+    if(json.containsKey("x-access-token")){
+      _changeState(json["x-access-token"], studentid.toString(), initid.toString());
+
+    }else{
+      print("yaha se");
+      print(response.body);
       Scaffold.of(context).showSnackBar(SnackBar(content: Text('User not Found!'),));
-    }*/
-
-
+      setState(() {
+        loading = false;
+      });
+    }
 
   }
+
   @override
   Widget build(BuildContext context) {
-  // TODO: implement build
-  return Container(decoration:BoxDecoration(
-  borderRadius: BorderRadius.circular(20.0),
-  color: Colors.grey[200],
-  ),margin: EdgeInsets.all(10.0),
-  child: Stack(alignment:Alignment.bottomCenter,children: <Widget>[
-  Padding(padding: EdgeInsets.all(10.0),child:
-  Column(
-  crossAxisAlignment: CrossAxisAlignment.stretch,
-  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  children: <Widget>[
-  Expanded(
-  flex: 2,
-  child:Container(margin: EdgeInsets.all(5),child:TextFormField(
-  keyboardType: TextInputType.text,
-  onChanged: (value) {saveinitid(value);},
-  decoration: new InputDecoration(
-  labelText: "Enter Institution Code",
-  focusColor: Colors.white,
-  labelStyle: TextStyle(color: Colors.grey[500],fontWeight: FontWeight.w500,),
-  filled: true,
-  fillColor: Colors.white,
-  border: new OutlineInputBorder(
-  borderSide: BorderSide(color: Colors.grey),
-  borderRadius: new BorderRadius.circular(25.0),
-  ),
-  )),) ),
-  Expanded(
-  flex: 2,
-  child:Container(margin: EdgeInsets.all(5),child:TextFormField(
-  keyboardType: TextInputType.text,
-  onChanged: (value) {savestudent(value);},
-  decoration: new InputDecoration(
-  labelText: "Enter Student Code",
-  labelStyle: TextStyle(color: Colors.grey[500],fontWeight: FontWeight.w500,),
-  fillColor: Colors.white,
-  focusColor: Colors.blue,
-  filled: true,
-  border: new OutlineInputBorder(
-  borderSide: BorderSide(color: Colors.grey),
-  borderRadius: new BorderRadius.circular(25.0),
-  ),
-  )),) ),
-  Expanded(
-  flex: 2,
-  child:Container(margin: EdgeInsets.all(5),child:TextFormField(
-  keyboardType: TextInputType.text,
-  onChanged: (value) {savepass(value);},
-  decoration: new InputDecoration(
-  labelText: "Enter Password",
-  labelStyle: TextStyle(color: Colors.grey[500],fontWeight: FontWeight.w500,),
-  fillColor: Colors.white,
-  focusColor: Colors.blue,
-  filled: true,
-  border: new OutlineInputBorder(
-  borderSide: BorderSide(color: Colors.grey),
-  borderRadius: new BorderRadius.circular(25.0),
-  ),
-  )),) ),
-  Expanded(flex:1,child: Container(margin:EdgeInsets.only(
-  top:2.0,
-  left:40.0,
-  right: 40.0),width: 200.0,height: 20.0,child:ButtonTheme(minWidth:200.0, height:20.0,child:RaisedButton(elevation:1.0,hoverElevation:1.5,shape:RoundedRectangleBorder(
-  borderRadius: BorderRadius.circular(20.0),
-  ),onPressed: () {
-    if(initid == null && studentid == null && password == null){
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Please enter all the details')));
-    }else if(initid == "" && studentid == "" && password == ""){
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Please enter all the details')));
-    }
-    else{
-  login();}
-  //Navigator.push(context, MaterialPageRoute(builder: (context) => starting()));
-  }, child: Text('SIGN IN', style: TextStyle(fontSize: 20.0, color: Colors.white,),),disabledColor: Colors.blue,),)
-  )
+    // TODO: implement build
+    return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: Colors.grey[200],
+        ),
+        margin: EdgeInsets.all(10.0),
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: <Widget>[
+            loading?Container(child:Center(
+              child: CircularProgressIndicator(),
+            )):Padding(
+              padding: EdgeInsets.only(bottom:25.0, top:5, left:5, right:5),
+              child: ListView(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.all(5),
+                        child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            onChanged: (value) {
+                              saveinitid(value);
+                            },
+                            decoration: new InputDecoration(
+                              hintText: "Enter Institution Code",
+                              focusColor: Colors.white,
+                              labelStyle: TextStyle(
+                                color: Colors.grey[500],
+                                fontWeight: FontWeight.w500,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: new OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius: new BorderRadius.circular(25.0),
+                              ),
+                            )),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(5),
+                        child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            onChanged: (value) {
+                              savestudent(value);
+                            },
+                            decoration: new InputDecoration(
+                              hintText: "Enter Teacher Code",
+                              labelStyle: TextStyle(
+                                color: Colors.grey[500],
+                                fontWeight: FontWeight.w500,
+                              ),
+                              fillColor: Colors.white,
+                              focusColor: Colors.blue,
+                              filled: true,
+                              border: new OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius: new BorderRadius.circular(25.0),
+                              ),
+                            )),
+                      ),
+                   Container(
+                        margin: EdgeInsets.all(5),
+                        child: TextFormField(
+                            obscureText: true,
+                            keyboardType: TextInputType.text,
+                            onChanged: (value) {
+                              savepass(value);
+                            },
+                            decoration: new InputDecoration(
+                              hintText: "Enter Password",
+                              labelStyle: TextStyle(
+                                color: Colors.grey[500],
+                                fontWeight: FontWeight.w500,
+                              ),
+                              fillColor: Colors.white,
+                              focusColor: Colors.blue,
+                              filled: true,
+                              border: new OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius: new BorderRadius.circular(25.0),
+                              ),
+                            )),
+                      ),
 
-
-  )],
-  ),),
-  ],overflow: Overflow.visible,));
+                ],
+              ),
+            ),
+            Positioned(bottom:-20.0,child:ButtonTheme(
+            minWidth: 200.0,
+            height: 40.0,child:
+            RaisedButton(
+              color: Colors_pack.color,
+              elevation: 1.0,
+              hoverElevation: 1.5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              onPressed: () {
+                if (initid == null &&
+                    studentid == null &&
+                    password == null) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          'Please enter all the details')));
+                } else if (initid == "" &&
+                    studentid == "" &&
+                    password == "") {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          'Please enter all the details')));
+                } else {
+                  login();
+                }
+                //Navigator.push(context, MaterialPageRoute(builder: (context) => starting()));
+              },
+              child: Text(
+                'SIGN IN',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.white,
+                ),
+              ),
+              disabledColor: Colors.blue,
+            )))
+          ],
+          overflow: Overflow.visible,
+        ));
   }
-  }
+}

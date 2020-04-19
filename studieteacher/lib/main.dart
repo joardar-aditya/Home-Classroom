@@ -1,6 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:studieteacher/ForgetPassword.dart';
+import 'package:studieteacher/colors/colors.dart';
+import 'package:studieteacher/models/Quiz_model.dart';
+import 'package:studieteacher/models/announce_model.dart';
+import 'package:studieteacher/models/chat_model.dart';
+import 'package:studieteacher/models/current_q.dart';
+import 'package:studieteacher/models/doc_model.dart';
+import 'package:studieteacher/models/exam_add_model.dart';
+import 'package:studieteacher/models/exam_details_model.dart';
+import 'package:studieteacher/models/hw_model.dart';
+import 'package:studieteacher/models/hw_submit_model.dart';
+import 'package:studieteacher/models/main_model.dart';
+import 'package:studieteacher/models/performance_model.dart';
+import 'package:studieteacher/models/reports.dart';
 import 'package:studieteacher/sign_in.dart';
+import 'package:studieteacher/splash_screen.dart';
+import 'package:studieteacher/starting.dart';
+
+import 'models/absent_students.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,7 +30,25 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
 
 
-    return MaterialApp(
+    return MultiProvider(
+       providers: [
+         ChangeNotifierProvider(create: (context) => doc_model() ,),
+         ChangeNotifierProvider(create: (context) => exam_add_model(),),
+         ChangeNotifierProvider(create: (context) => hw_model()),
+         ChangeNotifierProvider(create: (context) => announce_model()),
+         ChangeNotifierProvider(create: (context) => absent_s_model(),),
+         ChangeNotifierProvider(create: (context) => Quiz_model(),),
+         ChangeNotifierProvider(create: (context) => current_q_model(),),
+         ChangeNotifierProvider(create: (context)=> exam_details_model(),),
+         ChangeNotifierProvider(create: (context)=> hw_submit(),),
+         ChangeNotifierProvider(create: (context)=> performance_model(),),
+         ChangeNotifierProvider(create: (context)=> reports(),),
+         ChangeNotifierProvider(create: (context)=> main_model(),),
+         ChangeNotifierProvider(create: (context) => chat_model(),)
+
+
+       ],
+        child:MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -25,13 +63,13 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primaryColor: Colors.white,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+      home: MyHomePage(),
+    ));
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -42,13 +80,22 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+
+  var logged_in = "waiting";
+
+  @override
+  void initState() {
+    super.initState();
+    _getStatecurrent();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +106,13 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     ScreenUtil.init(context, width: 1080, height: 2280, allowFontScaling: true);
-    return Scaffold(
-      body: Column(
+    switch(logged_in) {
+      case "waiting":
+        return splash_screen();
+        break;
+      case "not":
+       return Scaffold(
+         body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.max,
@@ -68,20 +120,16 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
             child: Container(
               margin: EdgeInsets.only(bottom: 20.0),
-              decoration: BoxDecoration(color: Colors.blue),
+              decoration: BoxDecoration(color: Colors_pack.color),
               child: Center(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image(
-                          image: AssetImage('assets/Group8.png'),
-                          width: 160.0,
-                          height: 40.0,
+                          image: AssetImage('assets/studie.png'),
+                          width: 200.0,
+                          height: 200.0,
                         ),
-                        Image(
-                            image: AssetImage('assets/Group5.png'),
-                            width: 160.0,
-                            height: 40.0)
                       ])),
             ),
             flex: 7,
@@ -94,17 +142,37 @@ class _MyHomePageState extends State<MyHomePage> {
             flex: 3,
           ),
           Expanded(
-            child:sign_in(),
-            flex: 9,
-          ),
-          Expanded(
-              child: FlatButton(
-                onPressed: null,
-                child: Text('Forgot Sign In Details?'),
-              ),
-              flex: 1)
+            child: ListView(children: [sign_in(), FlatButton(
+              onPressed: () {
+                    Navigator.push(context,MaterialPageRoute(builder: (context) => ForgetPassword()));
+              },
+              child: Text('Forgot Sign In Details?'),
+            ),
+            ]),
+            flex: 7,
+          )
         ],
       ),
     );
+       break;
+      case "yes":
+        return starting();
+        break;
+  }
+  }
+
+  Future<bool> _getStatecurrent() async {
+       SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+       //Global State for the user state
+       bool value = sharedPreferences.containsKey("global_state");
+       String string = "waiting";
+       if(value){
+         string = sharedPreferences.getString("global_state");
+       }else{
+         string = "not";
+       }
+       setState(() {
+         logged_in = string;
+       });
   }
 }

@@ -1,16 +1,14 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:studieteacher/Homework/hw.dart';
 import 'package:studieteacher/colors/colors.dart';
 
 class container_check extends StatelessWidget {
-  var name;
-  var classes;
-  var section;
-  var subject;
+ hw Hw;
 
-  container_check(this.name, this.classes, this.section, this.subject);
-
+  container_check(this.Hw);
+  //list_of_homework[index].author,list_of_homework[index].classes,list_of_homework[index].section,list_of_homework[index].subject )
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -25,7 +23,7 @@ class container_check extends StatelessWidget {
         children: <Widget>[
             Container(
               margin: EdgeInsets.all(20),
-              child: Text('$name',textAlign: TextAlign.left, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24),),
+              child: Text(Hw.title.toString(),textAlign: TextAlign.left, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24),),
             ),
           Container(
             margin: EdgeInsets.only(bottom: 10),
@@ -38,18 +36,18 @@ class container_check extends StatelessWidget {
                   child: Text('Class', textAlign: TextAlign.left,style: TextStyle(color: Colors.grey[300], fontWeight: FontWeight.bold, fontSize: 20),),
                 ),
                 Container(
-                  child: Text('$classes', textAlign: TextAlign.left,style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 20),),
+                  child: Text(Hw.classes.toString(), textAlign: TextAlign.left,style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 20),),
                 ),
                 Container(
                   margin:EdgeInsets.only(left: 5),
                   child: Text('Sec', textAlign: TextAlign.left,style: TextStyle(color: Colors.grey[300], fontWeight: FontWeight.bold, fontSize: 20),),
                 ),
                 Container(
-                  child: Text('$section', textAlign: TextAlign.left,style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 20),),
+                  child: Text(Hw.section.toString(), textAlign: TextAlign.left,style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 20),),
                 ),
                 Container(
                   margin:EdgeInsets.symmetric(horizontal: 5),
-                  child: Text('$subject', textAlign: TextAlign.right,style: TextStyle(color: Colors.grey[300], fontWeight: FontWeight.bold, fontSize: 20),),
+                  child: Text(Hw.subject.toString(), textAlign: TextAlign.right,style: TextStyle(color: Colors.grey[300], fontWeight: FontWeight.bold, fontSize: 20),),
                 )
               ],
             ),

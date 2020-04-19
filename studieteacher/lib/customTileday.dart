@@ -3,18 +3,19 @@ import 'package:calendarro/default_day_tile.dart';
 import 'package:calendarro/default_day_tile_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:studieteacher/colors/colors.dart';
 
 class customTileday extends DayTileBuilder {
 
 
   BoxDecoration decoration_u =BoxDecoration(
   color: Colors.grey[200],
-  borderRadius: BorderRadius.circular(2)
+  borderRadius: BorderRadius.circular(10)
   );
 
   BoxDecoration decoration_y =BoxDecoration(
-      color: Colors.blue[900],
-      borderRadius: BorderRadius.circular(2)
+      color: Colors_pack.color,
+      borderRadius: BorderRadius.circular(10)
   );
 
 
@@ -23,7 +24,11 @@ class customTileday extends DayTileBuilder {
 
     bool isselected = Calendarro.of(context).isDateSelected(date);
     return Expanded(
-      child: Container(
+      child: InkWell(
+        onTap: () {
+          Calendarro.of(context).setSelectedDate(date);
+        },
+        child:Container(
         margin: EdgeInsets.all(5),
         height:50,
         width: 50,
@@ -31,6 +36,6 @@ class customTileday extends DayTileBuilder {
         decoration: isselected?decoration_y : decoration_u,
         
       ),
-    );
+    ));
   }
 }

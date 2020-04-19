@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:studieteacher/colors/colors.dart';
 
 
 class intro_button extends StatelessWidget {
@@ -16,11 +17,12 @@ class intro_button extends StatelessWidget {
           children: <Widget>[
             Flexible(flex:4,fit:FlexFit.loose,child:
             Container(
+              padding: EdgeInsets.all(4),
               margin: EdgeInsets.only(bottom: 8),
               child:Center(
                   child:Image(image: AssetImage(asset),)),
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),
-              color: Colors.blue[900]),
+              color: Colors_pack.color),
             )),
              Flexible(flex:1,fit:FlexFit.loose,child:Container(child:
              Center(

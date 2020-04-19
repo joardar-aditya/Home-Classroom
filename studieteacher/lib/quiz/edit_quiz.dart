@@ -1,34 +1,47 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:studieteacher/basic/basics.dart';
 import 'package:studieteacher/colors/colors.dart';
+import 'package:studieteacher/models/current_q.dart';
 import 'package:studieteacher/quiz/container.dart';
+import 'package:studieteacher/quiz/quiz.dart';
 import 'package:studieteacher/quiz/quizView.dart';
+import 'package:studieteacher/quiz/results.dart';
 
 class edit_quiz extends StatefulWidget {
+
+  quiz current_quiz;
+  edit_quiz(this.current_quiz);
   @override
-  State<StatefulWidget> createState() => _stateEdit();
+  State<StatefulWidget> createState() => _stateEdit(current_quiz);
 
 
 }
 
+
 class _stateEdit extends State<edit_quiz> {
+  quiz current_quiz;
+  _stateEdit(this.current_quiz);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBar(
-        title: basics("Edit/ View Quiz"),
+      appBar:  AppBar(
         elevation: 0.0,
+        leading: Consumer<current_q_model>(builder:(context, model, child){return
+          RaisedButton(color:Colors.white, elevation:0.0, onPressed:() {
+            Navigator.pop(context);},child:Image(image:AssetImage('assets/back.png'), height: 50,) );}),
+        title: Text('Add/ Edit a Quiz', style: TextStyle(color:Colors_pack.color, fontWeight: FontWeight.w700, fontSize: 28),),
       ),
       body:Container(
         margin: EdgeInsets.only(top:10, left:10, right:10),
         child: ListView(
           children: <Widget>[
-            container_inner_quiz(),
+            container_inner_quiz(current_quiz),
             Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
               Container(margin:EdgeInsets.all(10),child:SizedBox(width:140,height:50, child:RaisedButton(
-                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => ViewQuiz()));},
+                onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => ViewQuiz(current_quiz)));},
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 color:Colors_pack.color,
                 disabledColor: Colors_pack.color,
@@ -41,7 +54,7 @@ class _stateEdit extends State<edit_quiz> {
               ))]),
             Container(
               margin: EdgeInsets.all(10),
-              child: Text('03 students out of 04 students have participated in the Quiz', style: TextStyle(color: Colors.pinkAccent, fontSize: 24),),
+              child: Text(current_quiz.quizParti + ' students out of '+ current_quiz.quizTotal+ ' students have participated in the Quiz', style: TextStyle(color: Colors.pinkAccent, fontSize: 24),),
             ),
             Container(
               margin: EdgeInsets.all(10),
@@ -73,7 +86,9 @@ class _stateEdit extends State<edit_quiz> {
                 ],
               ),
             ),
-            ListView.builder(physics:ScrollPhysics(),shrinkWrap:true, scrollDirection:Axis.vertical, itemCount:10,itemBuilder: (context, ind) {
+            ListView.builder(physics:ScrollPhysics(),shrinkWrap:true, scrollDirection:Axis.vertical, itemCount:int.parse(current_quiz.TotalResults),itemBuilder: (context, ind) {
+
+              results c = current_quiz.quizResults[ind];
               return Container(margin:EdgeInsets.all(10),child:Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -85,13 +100,13 @@ class _stateEdit extends State<edit_quiz> {
                   )),
                   Flexible(
                     child: Container(
-                      child:Text('Aditya Jordan', style: TextStyle(color:Colors.black, fontSize: 24, fontWeight: FontWeight.bold),),
+                      child:Text(c.resultname, style: TextStyle(color:Colors.black, fontSize: 24, fontWeight: FontWeight.bold),),
                     ),
                   ),
                   Flexible(
                     child:Container(
                       alignment: Alignment.centerRight,
-                      child: Text('05/05', textAlign: TextAlign.right, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.pinkAccent),),
+                      child: Text(c.resultMarks+"/" + current_quiz.quizTotalM, textAlign: TextAlign.right, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.pinkAccent),),
                     )
                   )
                 ],

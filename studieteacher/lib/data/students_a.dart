@@ -1,13 +1,13 @@
 class students_a {
   var name;
-  var current;
-  students_a(this.name, this.current);
+  var docId;
+  students_a(this.name, this.docId);
 
   String get name_a {
     return name;
   }
 
   bool get current_a {
-    return current;
+    return docId;
   }
 }

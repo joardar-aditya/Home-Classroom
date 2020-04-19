@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:calendarro/calendarro.dart';
 import 'package:studieteacher/attendance_g.dart';
+import 'package:studieteacher/colors/colors.dart';
 import 'package:studieteacher/customTileday.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +17,8 @@ class attendance extends StatefulWidget {
 }
 
 class _attendanceState extends State<attendance> {
+
+  //TODO: Attendance input for the given class, section, subject, teacher
 
   static SharedPreferences prefs;
   final List<String> _months = <String>["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
@@ -32,6 +35,7 @@ class _attendanceState extends State<attendance> {
   final List<String> _teachers = <String>["Aditya Jordan", "Sujoy Dutta"];
   static String _currentteacher = "Sujoy Dutta";
   static String _currentSubject = "Mathematics";
+  static DateTime current = DateTime.now();
   @override
   void initState() {
     // TODO: implement initState
@@ -90,18 +94,25 @@ class _attendanceState extends State<attendance> {
     });
   }
 
+  final calendarroStateKey = GlobalKey<CalendarroState>();
+
+
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Attendance", style: TextStyle(color: Color(0xff261FFF), fontSize: 24, fontWeight: FontWeight.bold),),
         elevation: 0.0,
+        leading: RaisedButton(color:Colors.white, elevation:0.0, onPressed:() {Navigator.pop(context);},child:Image(image:AssetImage('assets/back.png'), height: 50,) ),
+        title: Text('Attendance', style: TextStyle(color:Colors_pack.color, fontWeight: FontWeight.w700, fontSize: 28),),
       ),
       body:Center(child: ListView(
         scrollDirection: Axis.vertical,
         children: <Widget>[
-          Container(child:
+          FittedBox(
+              fit:BoxFit.contain,
+              child:Container(child:
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
@@ -118,13 +129,15 @@ class _attendanceState extends State<attendance> {
                 selectedItemBuilder: (BuildContext context) {
                   return _months.map<Widget>((String item) {
                     return Container(
-                      width: 80,
+                      width: 100,
                       decoration: BoxDecoration(
                         color: Color(0xff261FFF),
                         borderRadius: BorderRadius.circular(5)
                       ),
-                      child:Center(child: Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
-                    ));
+                      child:Center(child:Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
+                    Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)])));
                   }).toList();
                 },
                 items: _months.map((String item) {
@@ -146,12 +159,15 @@ class _attendanceState extends State<attendance> {
                 selectedItemBuilder: (BuildContext context) {
                   return _years.map<Widget>((String item) {
                     return Container(
-                        width: 80,
+                        width: 100,
                         decoration: BoxDecoration(
                             color: Color(0xff261FFF),
                             borderRadius: BorderRadius.circular(5)
                         ),
-                        child:Center(child: Text(item.toString(), style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
+                        child:Center(child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
+                              Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)]),
                         ));
                   }).toList();
                 },
@@ -165,12 +181,13 @@ class _attendanceState extends State<attendance> {
 
 
             ],
-          )),
+          ))),
           Container(height:460,padding:EdgeInsets.only(top:30),child:
           Calendarro(
+                key: calendarroStateKey,
                 displayMode: DisplayMode.MONTHS,
                 dayTileBuilder: customTileday(),
-                selectedDate: DateTime.now(),
+                selectedDate: current,
                 weekdayLabelsRow: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   mainAxisSize:MainAxisSize.max ,
@@ -208,8 +225,10 @@ class _attendanceState extends State<attendance> {
                               color: Color(0xff261FFF),
                               borderRadius: BorderRadius.circular(5)
                           ),
-                          child:Center(child: Text(item.toString(), style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
-                          ));
+                          child:Center(child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
+                                Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)])));
                     }).toList();
                   },
                   items: _classes.map((String item) {
@@ -240,8 +259,10 @@ class _attendanceState extends State<attendance> {
                                   color: Color(0xff261FFF),
                                   borderRadius: BorderRadius.circular(5)
                               ),
-                              child:Center(child: Text(item.toString(), style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
-                              ));
+                              child:Center(child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
+                                    Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)])));
                         }).toList();
                       },
                       items: _sections.map((String item) {
@@ -272,8 +293,10 @@ class _attendanceState extends State<attendance> {
                                   color: Color(0xff261FFF),
                                   borderRadius: BorderRadius.circular(5)
                               ),
-                              child:Center(child: Text(item.toString(), style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
-                              ));
+                              child:Center(child:  Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children:[ Text(item, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
+                          Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)])));
                         }).toList();
                       },
                       items: _period.map((String item) {
@@ -299,8 +322,8 @@ class _attendanceState extends State<attendance> {
                 Container(decoration: BoxDecoration(
                     color: Color(0xff261FFF),
                     borderRadius: BorderRadius.circular(5)
-                ),padding:EdgeInsets.only(left: 10),child:
-                DropdownButton<String>(
+                ),padding:EdgeInsets.only(left: 10),child:Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children:[
+                Expanded(flex:4,child:DropdownButton<String>(
                   value: _currentSubject,
                   onChanged: (String string) => _changeSubject(string),
                   underline: Container(),
@@ -318,7 +341,7 @@ class _attendanceState extends State<attendance> {
                       value: item,
                     );
                   }).toList(),
-                ),),
+                )),Expanded(flex:1,child:Container(alignment:Alignment.centerRight,padding:EdgeInsets.symmetric(horizontal: 10),height:15,width:15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),))]), ),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 10),
                   child: Column(
@@ -329,8 +352,9 @@ class _attendanceState extends State<attendance> {
                       Container(decoration: BoxDecoration(
                           color: Color(0xff261FFF),
                           borderRadius: BorderRadius.circular(5)
-                      ),padding:EdgeInsets.only(left:10),child:
-                      DropdownButton<String>(
+                      ),padding:EdgeInsets.only(left:10),child:Row(children:[
+
+                        Expanded(flex:4,child:DropdownButton<String>(
                         value: _currentteacher,
                         onChanged: (String string) => _changeTeacher(string),
                         underline: Container(),
@@ -348,7 +372,7 @@ class _attendanceState extends State<attendance> {
                             value: item,
                           );
                         }).toList(),
-                      ),),
+                      )),Expanded(flex:1,child:Container(alignment:Alignment.centerRight,padding:EdgeInsets.symmetric(horizontal: 10),height:15,width:15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),))])),
                      ])
                       )
 
@@ -360,7 +384,21 @@ class _attendanceState extends State<attendance> {
         Container(
         margin: EdgeInsets.all(10),
         width: 200,
-    child:RaisedButton(onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => attendance_g() ));},
+    child:RaisedButton(onPressed: () {
+      DateTime selectedDate = calendarroStateKey.currentState.selectedDate;
+      print(selectedDate.toIso8601String());
+      String day = selectedDate.day.toString();
+      if(selectedDate.day<10){
+        day = "0"+day;
+      }
+      String month = selectedDate.month.toString();
+      if(selectedDate.month<10){
+        month = "0" + month;
+      }
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) => attendance_g(_currentClass, _section, _currentSubject,month, _currentYear,day,_currentperiod)
+    ));
+    },
     color: Color(0xff261FFF),
      disabledColor: Colors.grey,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

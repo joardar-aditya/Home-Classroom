@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bdfc654b-89ae-467d-b6e1-44accefc4dee" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/studieteacher/assets/back.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/assets/camera_upload.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/assets/drawer.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/assets/fb.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/assets/insta.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/assets/twitter.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/assets/upload2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/assets/upload3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/assets/yt.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/lib/chapters/add_ans.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/lib/chapters/chapter_start.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/lib/chapters/chapter_start_con.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/lib/chapters/chapters_details.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/lib/chapters/container_chapters.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/lib/performance/perf_start.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/lib/performance/performance_detail.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/lib/performance/pref_container.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/studieteacher/lib/report/report_entry.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/Announce/announce.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/Announce/announce.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/Homework/assign.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/Homework/assign.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/Homework/homework.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/Homework/homework.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/Homework/homework_details.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/Homework/homework_details.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/Homework/hw_check_detail.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/Homework/hw_check_detail.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/attendance.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/attendance.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/attendance_g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/attendance_g.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/document/document.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/document/document.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/exams/add_exam.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/exams/add_exam.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/exams/adding_scores.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/exams/adding_scores.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/exams/exams_container.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/exams/exams_container.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/exams/exams_past_container.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/exams/exams_past_container.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/exams/exams_start.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/exams/exams_start.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/intro_button.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/intro_button.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/quiz/Add_question.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/quiz/Add_question.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/quiz/add_on_ques.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/quiz/add_on_ques.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/quiz/add_quiz.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/quiz/add_quiz.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/quiz/edit_quiz.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/quiz/edit_quiz.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/quiz/quizView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/quiz/quizView.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/quiz/quizstart.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/quiz/quizstart.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/sign_in.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/sign_in.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/lib/starting.dart" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/lib/starting.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/studieteacher/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/studieteacher/pubspec.yaml" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1ZbhpPItCPT6PclfgY9WPWB0ZaO" />
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bdfc654b-89ae-467d-b6e1-44accefc4dee" name="Default Changelist" comment="" />
+      <created>1585113883087</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1585113883087</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

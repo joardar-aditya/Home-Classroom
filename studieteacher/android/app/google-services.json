@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "901867069920",
+    "firebase_url": "https://project-student-management.firebaseio.com",
+    "project_id": "project-student-management",
+    "storage_bucket": "project-student-management.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901867069920:android:a1a0a3b00f5844ea93cb85",
+        "android_client_info": {
+          "package_name": "com.studie.teacher"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "901867069920-oasq4tkkb9gmbk0pp61jf1ibbs7ef9me.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaxoARida014QvQ6ElRErdwxo0uYTUrAo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "901867069920-oasq4tkkb9gmbk0pp61jf1ibbs7ef9me.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

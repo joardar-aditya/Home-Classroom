@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:studieteacher/colors/colors.dart';
+import 'package:studieteacher/models/Exam.dart';
 
 
 class exam_details_container extends StatelessWidget {
-
+  Exam c;
+  exam_details_container(this.c);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    DateTime dateTime = DateTime.parse(c.Date);
     return Container(
       margin: EdgeInsets.all(10),
       child: FittedBox(fit
@@ -23,7 +26,7 @@ class exam_details_container extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Container(margin: EdgeInsets.all(10),
-                child:Text('Class Test 001', style: TextStyle(color: Colors.pinkAccent, fontSize: 20),)),
+                child:Text(c.Title, style: TextStyle(color: Colors.pinkAccent, fontSize: 20),)),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 10),
                   padding: EdgeInsets.all(5),
@@ -31,7 +34,7 @@ class exam_details_container extends StatelessWidget {
                     color: Colors.pinkAccent,
                     borderRadius: BorderRadius.circular(10)
                   ),
-                  child: Center(child: Text('1 JAN MON 2020', style: TextStyle(color:Colors.white),),),
+                  child: Center(child: Text(dateTime.day.toString()+" "+dateTime.month.toString()+" "+dateTime.year.toString(), style: TextStyle(color:Colors.white),),),
                 )
               ],
             ),
@@ -41,9 +44,9 @@ class exam_details_container extends StatelessWidget {
               children: <Widget>[
                 Flexible(fit:FlexFit.loose,child:
                 Container(margin: EdgeInsets.only(right:10, top:10, bottom: 10),
-                    child:Text('Sujoy Dutta', textAlign:TextAlign.left,style: TextStyle(color: Colors.pinkAccent, fontSize: 18, fontWeight: FontWeight.bold),)),
+                    child:Text(c.NameTeacher, textAlign:TextAlign.left,style: TextStyle(color: Colors.pinkAccent, fontSize: 18, fontWeight: FontWeight.bold),)),
                 ),Flexible(fit:FlexFit.loose,child:Container(
-                  child: Text('Mathematics',textAlign: TextAlign.right, style: TextStyle(color:Colors.pinkAccent, fontSize: 18,fontWeight: FontWeight.bold),),),
+                  child: Text("maths",textAlign: TextAlign.right, style: TextStyle(color:Colors.pinkAccent, fontSize: 18,fontWeight: FontWeight.bold),),),
                 )
               ],
             ),
