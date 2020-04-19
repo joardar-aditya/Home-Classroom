@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +25,10 @@ class homework_details extends StatefulWidget {
 class _detail_hw_state extends State<homework_details>{
   hw _Hw;
   _detail_hw_state(this._Hw);
+  int current_submissions = 0;
+  List<String> months = ["", "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  List<String> weeks = ["", "MON", "TUE", "WED", "THR", "FRI", "SAT", "SUN"];
+
 
 
   void check_submissions() async {
@@ -41,6 +47,20 @@ class _detail_hw_state extends State<homework_details>{
     });
 
     print(res.body);
+    var j = jsonDecode(res.body);
+    if(j["status"]=="success"){
+      List v = j["data"]["submissions"];
+      setState(() {
+
+        current_submissions = v.length;
+      });
+      List<String> s = [];
+      for(int i=0; i<v.length; i++){
+        s.add(v[i]["id"]);
+      }
+      _Hw.AddSubmissions(s);
+
+    }
   }
 
   @override
@@ -78,7 +98,7 @@ class _detail_hw_state extends State<homework_details>{
                   ),
                   
                   child: Center(
-                    child: Text(_Hw.due_date.day.toString() + " " + _Hw.due_date.month.toString() + " " + _Hw.due_date.year.toString(), style: TextStyle(color: Colors.blue, fontSize: 18),),
+                    child: Text(_Hw.due_date.day.toString() + " " + months[_Hw.due_date.month] + " " + weeks[_Hw.due_date.weekday] + " " +  _Hw.due_date.year.toString(), style: TextStyle(color: Colors.blue, fontSize: 18),),
                   ),
                 )
               ],
@@ -99,7 +119,7 @@ class _detail_hw_state extends State<homework_details>{
            ),
           ),
           Container(margin:EdgeInsets.all(10),
-            child: Center(child:Text('Submitted by 32 students', style: TextStyle(color: Colors.pinkAccent, fontWeight: FontWeight.bold, fontSize: 24),)),
+            child: Center(child:Text("Submitted by "+ current_submissions.toString()  +" students", style: TextStyle(color: Colors.pinkAccent, fontWeight: FontWeight.bold, fontSize: 24),)),
           ),
           Column(crossAxisAlignment:CrossAxisAlignment.center,children:[
             Container(

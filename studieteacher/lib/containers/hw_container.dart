@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:studieteacher/Homework/hw.dart';
 import 'package:studieteacher/colors/colors.dart';
 import 'package:studieteacher/models/absent_students.dart';
 import 'package:studieteacher/models/hw_submit_model.dart';
@@ -11,9 +12,11 @@ class hw_container extends StatefulWidget {
 
   Student _name;
   var _index;
-  hw_container(this._name, this._index);
+  hw _int;
+
+  hw_container(this._int,this._name, this._index);
   @override
-  State<StatefulWidget> createState() => _attendanceS(_name, _index);
+  State<StatefulWidget> createState() => _attendanceS(_int, _name, _index);
 
 }
 
@@ -23,7 +26,8 @@ class _attendanceS extends State<hw_container>{
 
   Student student;
   int index;
-  _attendanceS(this.student, this.index);
+  hw _i;
+  _attendanceS(this._i,this.student, this.index);
   var bool = false;
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,7 @@ class _attendanceS extends State<hw_container>{
         child:Container(
             margin: EdgeInsets.all(10),
             decoration: BoxDecoration(
-                color: bool?Colors.pinkAccent:Colors_pack.color,
+                color: (_i.HasSubmitted(student.dId))?Colors.grey[500]:bool?Colors.pinkAccent:Colors_pack.color,
                 borderRadius: BorderRadius.circular(5)
             ),padding: EdgeInsets.only(left:10, top:10, bottom: 10),
             child:Row(

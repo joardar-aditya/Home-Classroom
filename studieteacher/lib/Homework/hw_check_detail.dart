@@ -111,7 +111,7 @@ class _attendance_g_state extends State<hw_check_detail> {
             child:Container(
                 margin: EdgeInsets.symmetric(vertical: 10),
                 child:loading?Container(child:Center(child: CircularProgressIndicator(),)):ListView.builder(itemCount:students.length,itemBuilder: (context, i) {
-                  return hw_container(students[i], i+1);
+                  return hw_container(_hw,students[i], i+1);
                 },)
             ),
           ),

@@ -19,8 +19,20 @@ class upcoming_exam extends StatefulWidget {
 class _stateI extends State<upcoming_exam>{
 
   Exam current;
-
+  List<String> months = ["", "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  List<String> weeks = ["", "MON", "TUE", "WED", "THR", "FRI", "SAT", "SUN"];
+  DateTime c = DateTime.now();
   _stateI(this.current);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      c = DateTime.parse(current.Date);
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -51,7 +63,7 @@ class _stateI extends State<upcoming_exam>{
                         margin: EdgeInsets.all(10),
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(color:Colors.white, borderRadius: BorderRadius.circular(20)),
-                        child: Text(current.Date.toString()),
+                        child: Text(c.day.toString() +" "+ months[c.month]+" "+weeks[c.weekday]+" "+c.year.toString()),
                       )
                     ],
                   ),
@@ -67,7 +79,7 @@ class _stateI extends State<upcoming_exam>{
                       ),
                       Container(
                         margin: EdgeInsets.all(5),
-                        child: Text("maths", style: TextStyle(fontSize: 18, color: Colors.deepPurpleAccent),),
+                        child: Text(current.Subject, style: TextStyle(fontSize: 18, color: Colors.deepPurpleAccent),),
                       ),
                       Container(
                         margin: EdgeInsets.all(5),
@@ -75,7 +87,7 @@ class _stateI extends State<upcoming_exam>{
                       ),
                       Container(
                         margin: EdgeInsets.all(5),
-                        child: Text("1", style: TextStyle(color:Colors.deepPurpleAccent,fontSize: 18),),
+                        child: Text(current.Class, style: TextStyle(color:Colors.deepPurpleAccent,fontSize: 18),),
                       ),
                     ],
                   )),
@@ -91,7 +103,7 @@ class _stateI extends State<upcoming_exam>{
                       ),
                       Container(
                         margin: EdgeInsets.all(5),
-                        child: Text("Aditya", style: TextStyle(fontSize: 18, color: Colors.deepPurpleAccent),),
+                        child: Text(current.NameTeacher, style: TextStyle(fontSize: 18, color: Colors.deepPurpleAccent),),
                       ),
                       Container(
                         margin: EdgeInsets.all(5),
@@ -99,7 +111,7 @@ class _stateI extends State<upcoming_exam>{
                       ),
                       Container(
                         margin: EdgeInsets.all(5),
-                        child: Text("a", style: TextStyle(fontSize: 18, color: Colors.deepPurpleAccent),),
+                        child: Text(current.Section, style: TextStyle(fontSize: 18, color: Colors.deepPurpleAccent),),
                       ),
                     ],
                   ))
@@ -112,24 +124,33 @@ class _stateI extends State<upcoming_exam>{
               decoration:BoxDecoration(color:Colors.grey[300],borderRadius: BorderRadius.circular(20)),
               child:RichText(text: TextSpan(children: [
                 TextSpan(text: "Student has ", style:TextStyle(color: Colors.pinkAccent, fontSize: 24)),
-                //TextSpan(text:current.Date.difference(DateTime.now()).inDays.toString(),style: TextStyle(color:Colors.deepPurpleAccent, fontSize: 24)),
+                TextSpan(text:(c.difference(DateTime.now()).inDays+1).toString() ,style: TextStyle(color:Colors.deepPurpleAccent, fontSize: 24)),
                 TextSpan(text: " days more to prepare for the exam", style: TextStyle(color: Colors.pinkAccent, fontSize: 24))
               ]),)),
           Container(
             margin: EdgeInsets.all(20),
             child: Text("Syllabus for the exam", style: TextStyle(fontSize: 22),),
           ),
-          /*ListView.builder(
+          ListView.builder(
             shrinkWrap: true,
-              itemCount: current.Chapters.split(",").length,
+              itemCount: current.syllabus.length,
               itemBuilder: (context, item){
             return Container(
-              margin: EdgeInsets.all(10),
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(20)),
-              child: Text(current.Chapters..split(",")[item], style: TextStyle(fontSize: 24),),
+
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children:[Container(
+                  margin: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(20)),
+                  child:Text(current.syllabus[item].name, style: TextStyle(fontSize: 24),)),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(current.syllabus[item].desc, style: TextStyle(fontSize: 20),),
+                )
+              ])
             );
-          })*/
+          })
         ],
       ),
     );

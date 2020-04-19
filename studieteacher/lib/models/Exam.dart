@@ -1,5 +1,11 @@
 import 'package:flutter/cupertino.dart';
 
+class ExamChapter {
+  var name;
+  var desc;
+  ExamChapter(this.name, this.desc);
+}
+
 class Exam {
   var marks = [];
   String _title = "NA";
@@ -9,8 +15,9 @@ class Exam {
   String _class = "X";
   String _section = "X";
   String Id ="NA";
+  List<ExamChapter> syllabus = [];
 
-  Exam(this.Id, this._title, this._dueDate, this._nameTeacher, this._subject,this._class, this._section);
+  Exam(this.Id, this._title, this._dueDate, this._nameTeacher, this._subject,this._class, this._section, this.syllabus);
 
   String get Date {
     return _dueDate;
@@ -29,6 +36,10 @@ class Exam {
 
   String get Section {
     return _section;
+  }
+
+  String get Subject {
+    return _subject;
   }
 
 }

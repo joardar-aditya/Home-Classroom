@@ -14,7 +14,6 @@ class exam_details_model extends ChangeNotifier {
 
   exam_details_model() {
     GetUpcomingExams();
-    GetLeftOutExams();
     PastExams(DateTime.now().month, DateTime.now().year);
   }
 
@@ -44,8 +43,14 @@ class exam_details_model extends ChangeNotifier {
           String _ch = _current["title"].toString();
           String _cl = _current["class"];
           String _sec = _current["section"];
-          //TODO:Teacher and Subject to be Added
-          c.add(Exam(id,_ch, _dat,teacher, "maths", _cl,_sec));
+          String sub = _current["sub"];
+          String tea = _current["author"];
+          List v = _current["chapters"];
+          List<ExamChapter> e = [];
+          for(int j=0; j<v.length; j++){
+            e.add(ExamChapter(v[j]["name"], v[j]["desc"]));
+          }
+          c.add(Exam(id,_ch, _dat,tea, sub , _cl,_sec, e));
         }
         upcoming = c;
         print(upcoming);
@@ -57,7 +62,9 @@ class exam_details_model extends ChangeNotifier {
 
   }
 
-  void GetLeftOutExams() async {
+
+
+  void PastExams(int Month, int Year) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String code = sharedPreferences.getString("user");
     String teacher = sharedPreferences.getString("tcode");
@@ -70,6 +77,7 @@ class exam_details_model extends ChangeNotifier {
       "type": "teacher",
     });
     print(res.body);
+    print("PAST EXAM CALLED");
     if (res.statusCode == 200) {
       Map j = jsonDecode(res.body);
       List<Exam> c = [];
@@ -81,61 +89,22 @@ class exam_details_model extends ChangeNotifier {
           String id= ex[i]["id"];
           String _fullMa = _current["full_marks"];
           String _dat = _current["date"];
-          if (DateTime
-              .parse(_dat).isBefore(today)) {
-            String _ch = _current["chapters"].toString();
-            String _cl = _current["class"];
-            String _sec = _current["section"];
-            //Teacher and Subject to be Added
-            c.add(Exam(id,_ch, _dat,teacher, "maths", _cl,_sec));
+          String _ch = _current["title"].toString();
+          String _cl = _current["class"];
+          String _sec = _current["section"];
+          String sub = _current["sub"];
+          String tea = _current["author"];
+          List v = _current["chapters"];
+          List<ExamChapter> e = [];
+          for(int j=0; j<v.length; j++){
+            e.add(ExamChapter(v[j]["name"], v[j]["desc"]));
           }
+          c.add(Exam(id,_ch, _dat,tea, sub , _cl,_sec, e));
         }
-        print(c);
-        leftout = c;
-        notifyListeners();
-      }
-    }
-
-
-  }
-
-  void PastExams(int Month, int Year) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String code = sharedPreferences.getString("user");
-    String teacher = sharedPreferences.getString("tcode");
-    String school = sharedPreferences.getString("icode");
-    Uri uri = Uri.https(
-        "studie-server-dot-project-student-management.appspot.com",
-        "/teacher/exam/a101/1/1");
-    var res = await http.get(uri, headers: {
-      "x-access-token": code,
-      "type": "teacher",
-    });
-    print(res.body);
-    if (res.statusCode == 200) {
-      Map j = jsonDecode(res.body);
-      List<Exam> c = [];
-      var today = DateTime.now();
-      if (j["status"] == "success") {
-        List ex = j["exams"];
-        for (int i = 0; i < ex.length; i++) {
-          Map _current = ex[i]["data"];
-          String id = ex[i]["id"];
-          String _fullMa = _current["full_marks"];
-          String _dat = _current["date"];
-          if (DateTime
-              .parse(_dat)
-              .month == Month && DateTime.parse(_dat).year == Year) {
-            String _ch = _current["chapters"];
-            String _cl = _current["class"];
-            String _sec = _current["section"];
-            //Teacher and Subject to be Added
-            c.add(Exam(id,_ch, _dat,teacher, "maths", _cl,_sec));
-          }
         }
         print(c);
         past = c;
         notifyListeners();
       }
     }
-  }}
+  }

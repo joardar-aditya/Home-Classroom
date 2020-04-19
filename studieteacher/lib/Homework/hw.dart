@@ -11,6 +11,18 @@ class hw {
   var chapter;
   int _submissions;
   DateTime due_date;
+  List<String> submissions = [];
+
+
+
+  void AddSubmissions(List<String> su) {
+    submissions = su;
+  }
+
+  bool HasSubmitted(String s){
+    return submissions.contains(s);
+
+  }
 
   String get Id {
     return _id;
