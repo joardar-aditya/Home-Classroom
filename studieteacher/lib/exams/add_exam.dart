@@ -368,18 +368,6 @@ class _state_add_exam extends State<add_exam>{
               ),
             ),
             ));})]),
-          Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
-            Consumer2<exam_add_model, main_model>(builder:(context, model,model2, child){return Container(margin:EdgeInsets.all(10),child:SizedBox(width: 200, height:50, child:RaisedButton(
-              onPressed: () {
-                  AddExam(model, model2);
-              },
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              color:Colors_pack.color,
-              disabledColor: Colors_pack.color,
-              child:Container(margin: EdgeInsets.symmetric(horizontal:5),child:
-              Text('Add Exam', style: TextStyle(color: Colors.white, fontSize: 20),),)
-            ),
-            ));})]),
       Consumer<exam_add_model>(builder: (context, model, child){
      return ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 500),
@@ -416,7 +404,18 @@ class _state_add_exam extends State<add_exam>{
               );
             }
           );}));}),
-
+          Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
+            Consumer2<exam_add_model, main_model>(builder:(context, model,model2, child){return Container(margin:EdgeInsets.all(10),child:SizedBox(width: 200, height:50, child:RaisedButton(
+                onPressed: () {
+                  AddExam(model, model2);
+                },
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                color:Colors_pack.color,
+                disabledColor: Colors_pack.color,
+                child:Container(margin: EdgeInsets.symmetric(horizontal:5),child:
+                Text('Add Exam', style: TextStyle(color: Colors.white, fontSize: 20),),)
+            ),
+            ));})]),
 
 
         ],

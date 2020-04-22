@@ -22,7 +22,7 @@ class adding_scores extends StatefulWidget {
 
 }
 
-class _stateAddingScore extends State<adding_scores>{
+class _stateAddingScore extends State<adding_scores> {
   Exam current_Exam ;
   _stateAddingScore(this.current_Exam);
   var loading = true;
@@ -213,6 +213,7 @@ class _stateAddingScore extends State<adding_scores>{
     for(int j=0; j<stud.length; j++){
       lists.add(stud[j].Data);
     }
+    print(current_Exam.Id);
     Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/exam");
     var res = await http.patch(uri, headers: {
       "x-access-token":code,

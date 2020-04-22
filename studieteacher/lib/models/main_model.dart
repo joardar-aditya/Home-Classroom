@@ -10,6 +10,8 @@ class main_model extends ChangeNotifier {
   var Name = "NA";
   var Classes = "5";
   var section= "A";
+  String teacher ;
+  List<String> teachers = [];
   List<String> subjects = [];
   String _current_subject ;
   static var Classes_List = List<String>.generate(12, (index) => (index + 1).toString()).toList();
@@ -37,6 +39,38 @@ class main_model extends ChangeNotifier {
   main_model(){
     getDetails();
     getChapters();
+    getTeachers();
+
+}
+
+
+void ChangeTeacher(String s){
+    teacher = s;
+    notifyListeners();
+}
+
+
+
+void getTeachers() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  String code = sharedPreferences.getString("user");
+  String teacher = sharedPreferences.getString("tcode");
+  String school = sharedPreferences.getString("icode");
+  Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "teacher/teacher/$school");
+  var res = await http.get(uri, headers: {
+    "x-access-token": code,
+    "type": "teacher"
+  });
+  var j = jsonDecode(res.body);
+  List t = j["data"];
+  List<String> tea = [];
+  for(int i=0; i<t.length;i++){
+    tea.add(t[i]["name"]);
+
+  }
+  teachers = tea;
+  teacher = teachers[0];
+  notifyListeners();
 
 }
 
@@ -75,6 +109,9 @@ void getDetails() async {
 
 
 void getChapters() async {
+    chapters = [];
+    list_of_chapters = [];
+    notifyListeners();
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   String code = sharedPreferences.getString("user");
   print(code);
@@ -108,7 +145,7 @@ void getChapters() async {
             List d = ch[j]["doubts"];
             List<Doubts> dou = [];
             for(int l =0; l<d.length; l++){
-              dou.add(Doubts(d[l]["class"], d[l]["sec"], d[l]["sname"], DateTime.fromMillisecondsSinceEpoch(d[l]["asked"]), d[l]["doubtText"]));
+              dou.add(Doubts(d[l]["class"], d[l]["sec"], d[l]["sname"], DateTime.fromMillisecondsSinceEpoch(d[l]["asked"]), d[l]["doubtText"],ch[j]["name"],ij,d[l]["scode"]));
             }
             cu.AddDoubts(dou);
           }

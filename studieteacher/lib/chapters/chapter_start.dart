@@ -43,7 +43,7 @@ class _stateDetails extends State<chapter_start> {
 
 
   final globalKey = GlobalKey<ScaffoldState>();
-  var loading = true;
+  var loading = false;
   static List<Chapter> list_of_chapters = [];
   @override
   Widget build(BuildContext context) {

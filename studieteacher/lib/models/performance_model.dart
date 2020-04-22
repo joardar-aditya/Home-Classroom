@@ -50,7 +50,7 @@ class performance_model extends ChangeNotifier {
         }else{
           print(stud.toString());
           for(int i=0; i<stud.length; i++) {
-            if(stud[i]["name"].toString().startsWith(p)){
+            if(stud[i]["name"].toString().toLowerCase().startsWith(p)){
             students_c.add(Student(stud[i]["name"].toString(), stud[i]["id"].toString(), stud[i]["code"].toString()));
           }}
 

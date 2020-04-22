@@ -67,7 +67,7 @@ class _Search extends State<reportSearch> {
     List<String> list_of_students = [];
     for(var i = 0; i< l_h.length; i++){
       var s = json.decode(l_h[i]);
-      if(s["name"] == name){
+      if(s["name"].toString().toLowerCase() == name.toLowerCase()){
       list_of_students.add(s["name"]);
       codes.add(s["code"]);}
     }

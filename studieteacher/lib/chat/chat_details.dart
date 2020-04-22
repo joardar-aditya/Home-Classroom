@@ -125,20 +125,20 @@ class _stateI extends State<chat_details> {
         return Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
-            children:[Container(padding:EdgeInsets.all(10),margin:EdgeInsets.all(10),alignment: Alignment.topLeft,decoration: BoxDecoration(color:Colors.grey[200], borderRadius:
+            children:[Container(width:200,padding:EdgeInsets.all(10),margin:EdgeInsets.all(10),alignment: Alignment.topLeft,decoration: BoxDecoration(color:Colors.grey[200], borderRadius:
         BorderRadius.circular(20)),child: Text(list_messages[ind].text, style: TextStyle(fontSize: 16),))]);
       }else if(list_messages[ind].journ=="sen"){
         return Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
-            children:[Container(padding:EdgeInsets.all(10),margin:EdgeInsets.all(10),alignment: Alignment.topRight,decoration: BoxDecoration(color:Colors.pinkAccent, borderRadius:
+            children:[Container(width:200,padding:EdgeInsets.all(10),margin:EdgeInsets.all(10),alignment: Alignment.topRight,decoration: BoxDecoration(color:Colors.pinkAccent, borderRadius:
         BorderRadius.circular(20)),child: Text(list_messages[ind].text, style: TextStyle(fontSize: 16, color: Colors.white),))]);
       }
       else if(list_messages[ind].journ=="ano"){
         return Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            children:[Container(padding:EdgeInsets.all(10),margin:EdgeInsets.all(10),alignment: Alignment.center,decoration: BoxDecoration(color:Colors_pack.color, borderRadius:
+            children:[Container(width:200,padding:EdgeInsets.all(10),margin:EdgeInsets.all(10),alignment: Alignment.center,decoration: BoxDecoration(color:Colors_pack.color, borderRadius:
             BorderRadius.circular(20)),child: Text(list_messages[ind].text, style: TextStyle(fontSize: 16, color: Colors.white),))]);
       }else{
         return null;

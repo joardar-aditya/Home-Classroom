@@ -28,7 +28,7 @@ class quiz_container extends StatelessWidget {
 
               )),
               Expanded(
-                child:Container(alignment:Alignment.centerRight,child:Text(current_quiz.quizAuthor, textAlign: TextAlign.right, style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),)
+                child:Container(alignment:Alignment.centerRight,child:Text(current_quiz.author, textAlign: TextAlign.right, style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),)
               ))
             ],
           )),
@@ -94,7 +94,7 @@ class container_inner_quiz extends StatelessWidget {
 
                     )),
                 Expanded(
-                    child:Container(alignment:Alignment.centerRight,child:Text(current_quiz.quizAuthor, textAlign: TextAlign.right, style: TextStyle(color: Colors_pack.color, fontSize: 24, fontWeight: FontWeight.bold),)
+                    child:Container(alignment:Alignment.centerRight,child:Text(current_quiz.author, textAlign: TextAlign.right, style: TextStyle(color: Colors_pack.color, fontSize: 24, fontWeight: FontWeight.bold),)
                     ))
               ],
             )),

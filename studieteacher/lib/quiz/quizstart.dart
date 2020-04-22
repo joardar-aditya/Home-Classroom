@@ -216,8 +216,8 @@ class _stateQuiz extends State<quizstart> {
     List<quiz> new_list = [];
     for(var i =0; i< list_quiz.length; i++){
       var json = list_quiz[i]["data"];
-      quiz current = quiz(json["class"], json["section"], json["title"], json["subject"], json["name"], json["total_time"], json["syllabus"].toString(), json["author_name"],
-          json["total_part"], json["total_marks"]);
+      quiz current = quiz(json["class"], json["section"], json["title"], json["subject"], json["author_name"].toString()  , json["total_time"], json["syllabus"].toString(), json["num_submissions"].toString(),
+          json["num_submissions"].toString(), json["total_marks"]);
 
       List que = json["questions"];
       for(var i=0; i<que.length; i++){

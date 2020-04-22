@@ -20,9 +20,7 @@ class quiz {
 
   quiz(this.classes, this.section, this.title, this.subject, this.author, this.due_date,this.syllabus, this.parti, this.total_part, this.total_marks) ;
 
-  factory quiz.fromJson(dynamic json){
-    return quiz(json["class"], json["section"], json["title"], json["subject"], json["author"], json["due_date"], json["syllabus"], json["parti"], json["total_part"], json["total_marks"]);
-  }
+
 
   void AddQuestion(question q){
     questions.add(q);
@@ -32,6 +30,17 @@ class quiz {
   void AddResult(results r) {
     result_t.add(r);
 
+  }
+
+
+  String get Minutes {
+    List<String> l = due_date.split(",");
+    return l[0];
+  }
+
+  String get Seconds {
+    List<String> l = due_date.split(",");
+    return l[1];
   }
 
   String get TotalQuestion {

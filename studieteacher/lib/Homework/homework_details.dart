@@ -31,6 +31,30 @@ class _detail_hw_state extends State<homework_details>{
 
 
 
+
+
+
+  void get_download() async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String code = sharedPreferences.getString("user");
+    String teacher = sharedPreferences.getString("tcode");
+    String school = sharedPreferences.getString("icode");
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "teacher/homework/submissions/download",
+    {
+      "id":_Hw.Id,
+
+    });
+    var res = await http.get(uri, headers: {
+          "x-access-token": code,
+          "type": "teacher"
+    },);
+
+    print(res.body);
+
+  }
+
+
+
   void check_submissions() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String code = sharedPreferences.getString("user");
@@ -68,6 +92,7 @@ class _detail_hw_state extends State<homework_details>{
     // TODO: implement initState
     super.initState();
     check_submissions();
+    get_download();
   }
 
   @override

@@ -91,7 +91,7 @@ class _stateView extends State<ViewQuiz>{
                                         borderRadius: BorderRadius.circular(10)
                                     ),
                                     child: Center(
-                                        child:Text(q.quesSec+":"+q.quesmilli, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24),)
+                                        child:Text(currentQuiz.Minutes+":"+currentQuiz.Seconds, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 24),)
                                     ),
                                   )
 

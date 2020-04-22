@@ -4,10 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:calendarro/calendarro.dart';
+import 'package:provider/provider.dart';
 import 'package:studieteacher/attendance_g.dart';
 import 'package:studieteacher/colors/colors.dart';
 import 'package:studieteacher/customTileday.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:studieteacher/models/main_model.dart';
 
 
 class attendance extends StatefulWidget {
@@ -212,13 +214,16 @@ class _attendanceState extends State<attendance> {
                 children:[Container(child:
                   Text('Class', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),),),
                 Padding(padding: EdgeInsets.symmetric(horizontal: 5),child:
-                DropdownButton<String>(
-                  value: _currentClass,
-                  onChanged: (String string) => _changeClass(string),
+                Consumer<main_model>(builder: (context, model, child) { return DropdownButton<String>(
+                  value: model.Classes,
+                  onChanged: (String string) {
+                    model.ChangeClasses(string);
+                    model.getDetails();
+                  },
                   underline: Container(),
                   iconSize: 0,
                   selectedItemBuilder: (BuildContext context) {
-                    return _classes.map<Widget>((String item) {
+                    return model.Class_list.map<Widget>((String item) {
                       return Container(
                           width: 80,
                           decoration: BoxDecoration(
@@ -231,28 +236,31 @@ class _attendanceState extends State<attendance> {
                                 Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)])));
                     }).toList();
                   },
-                  items: _classes.map((String item) {
+                  items: model.Class_list.map((String item) {
                     return DropdownMenuItem<String>(
                       child: Text('$item'),
                       value: item,
                     );
                   }).toList(),
-                ),) ,
+                );})) ,
 
               ],
 
             ),
-                Column(
+                Consumer<main_model>(builder: (context, model, child) { return Column(
                   children:[Container(child:
                   Text('Section', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),),),
                     Padding(padding: EdgeInsets.symmetric(horizontal: 5),child:
                     DropdownButton<String>(
-                      value: _section,
-                      onChanged: (String string) => _changeSections(string),
+                      value: model.section,
+                      onChanged: (String string) {
+                        model.ChangeSec(string);
+                        model.getDetails();
+                      },
                       underline: Container(),
                       iconSize: 0,
                       selectedItemBuilder: (BuildContext context) {
-                        return _sections.map<Widget>((String item) {
+                        return model.Section_list.map<Widget>((String item) {
                           return Container(
                               width: 80,
                               decoration: BoxDecoration(
@@ -265,7 +273,7 @@ class _attendanceState extends State<attendance> {
                                     Container(margin:EdgeInsets.all(10),height:15,width: 15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),)])));
                         }).toList();
                       },
-                      items: _sections.map((String item) {
+                      items: model.Section_list.map((String item) {
                         return DropdownMenuItem<String>(
                           child: Text('$item'),
                           value: item,
@@ -275,7 +283,7 @@ class _attendanceState extends State<attendance> {
 
                   ],
 
-                ),
+                );}),
                 Column(
                   children:[Container(child:
                   Text('Period', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),),),
@@ -312,7 +320,8 @@ class _attendanceState extends State<attendance> {
                 )]
           ),)
         ,
-        Container(
+        Consumer<main_model>(builder:(context, model, child){ return
+          Container(
             margin: EdgeInsets.all(10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -324,63 +333,33 @@ class _attendanceState extends State<attendance> {
                     borderRadius: BorderRadius.circular(5)
                 ),padding:EdgeInsets.only(left: 10),child:Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children:[
                 Expanded(flex:4,child:DropdownButton<String>(
-                  value: _currentSubject,
-                  onChanged: (String string) => _changeSubject(string),
+                  value: model.Current_Subject,
+                  onChanged: (String string) {
+                    model.ChangeSubject(string);
+                  },
                   underline: Container(),
                   iconSize: 0,
                   selectedItemBuilder: (BuildContext context) {
-                    return _subjects.map<Widget>((String item) {
+                    return model.subjects.map<Widget>((String item) {
                       return Container(
                           child:Center(child: Text(item.toString(), style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
                           ));
                     }).toList();
                   },
-                  items: _subjects.map((String item) {
+                  items: model.subjects.map((String item) {
                     return DropdownMenuItem<String>(
                       child: Text('$item'),
                       value: item,
                     );
                   }).toList(),
                 )),Expanded(flex:1,child:Container(alignment:Alignment.centerRight,padding:EdgeInsets.symmetric(horizontal: 10),height:15,width:15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),))]), ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children:[Container(margin:EdgeInsets.symmetric(vertical: 10, horizontal: 10),child:
-                    Text('Choose Teacher', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),),),
-                      Container(decoration: BoxDecoration(
-                          color: Color(0xff261FFF),
-                          borderRadius: BorderRadius.circular(5)
-                      ),padding:EdgeInsets.only(left:10),child:Row(children:[
 
-                        Expanded(flex:4,child:DropdownButton<String>(
-                        value: _currentteacher,
-                        onChanged: (String string) => _changeTeacher(string),
-                        underline: Container(),
-                        iconSize: 0,
-                        selectedItemBuilder: (BuildContext context) {
-                          return _teachers.map<Widget>((String item) {
-                            return Container(
-                                child:Center(child: Text(item.toString(), style:TextStyle(fontWeight: FontWeight.bold,fontSize: 20, color: Colors.white),),
-                                ));
-                          }).toList();
-                        },
-                        items: _teachers.map((String item) {
-                          return DropdownMenuItem<String>(
-                            child: Text('$item'),
-                            value: item,
-                          );
-                        }).toList(),
-                      )),Expanded(flex:1,child:Container(alignment:Alignment.centerRight,padding:EdgeInsets.symmetric(horizontal: 10),height:15,width:15,decoration: BoxDecoration(color:Colors.blue[200], shape: BoxShape.circle),))])),
-                     ])
-                      )
 
               ],
 
             ),
-          ),
-        Column(crossAxisAlignment:CrossAxisAlignment.center,children:[
+          );}),
+        Consumer<main_model>(builder: (context, model, child) { return Column(crossAxisAlignment:CrossAxisAlignment.center,children:[
         Container(
         margin: EdgeInsets.all(10),
         width: 200,
@@ -396,14 +375,14 @@ class _attendanceState extends State<attendance> {
         month = "0" + month;
       }
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => attendance_g(_currentClass, _section, _currentSubject,month, _currentYear,day,_currentperiod)
+      Navigator.push(context, MaterialPageRoute(builder: (context) => attendance_g(model, month, selectedDate.year.toString(),day)
     ));
     },
     color: Color(0xff261FFF),
      disabledColor: Colors.grey,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     child:Padding(padding:EdgeInsets.all(10),child:Text('Attendance', textAlign: TextAlign.center, style: TextStyle(fontSize:22,fontWeight:FontWeight.bold, color:Colors.white
-    )))))]),
+    )))))]);}),
      ]
     )));
   }

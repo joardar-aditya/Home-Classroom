@@ -14,19 +14,18 @@ import 'package:studieteacher/models/absent_students.dart';
 import 'colors/colors.dart';
 import 'package:http/http.dart' as http;
 
+import 'models/main_model.dart';
+
 class attendance_g extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => _attendance_g_state(_currentClass, _section, _subject, Month, Year,day,Period);
-  var  _currentClass = "";
-  var _section = "";
-  var _subject = "";
+  State<StatefulWidget> createState() => _attendance_g_state(mq, Month, Year, day);
+  main_model mq;
   var Month = "";
   var Year ="";
   var day="";
-  var Period = "";
 
 
-  attendance_g(this._currentClass, this._section, this._subject,this.Month, this.Year, this.day, this.Period);
+  attendance_g(this.mq, this.Month, this.Year, this.day);
 
 }
 
@@ -38,15 +37,19 @@ class _attendance_g_state extends State<attendance_g> {
   var day="";
   var Period = "";
   List<String> names_of_absentees = [];
+  main_model m;
+  _attendance_g_state(this.m, this.Month, this.Year, this.day);
 
-  void getPresentAttendance() async{
+  void getPresentAttendance(main_model model) async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String code = sharedPreferences.getString("user");
     print(code);
     String teacher = sharedPreferences.getString("tcode");
     String school = sharedPreferences.getString("icode");
-    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/attendance/class/$school/$_currentClass/$_section",{
-      "subject":"geo",
+    String cl = model.Classes;
+    String se = model.section;
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/attendance/class/$school/$cl/$se",{
+      "subject": model.Current_Subject,
       "tcode":teacher,
       "date": "$Year$Month$day"
     });
@@ -70,7 +73,7 @@ class _attendance_g_state extends State<attendance_g> {
 
   }
 
-  _attendance_g_state(this._currentClass, this._section, this._subject,this.Month, this.Year, this.day, this.Period);
+
 
   static List<Student> list_of_students = [];
   static List<String> absent = [];
@@ -84,8 +87,8 @@ class _attendance_g_state extends State<attendance_g> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    gettingStudents();
-    getPresentAttendance();
+    gettingStudents(m);
+    getPresentAttendance(m);
   }
   @override
   Widget build(BuildContext context) {
@@ -178,12 +181,14 @@ class _attendance_g_state extends State<attendance_g> {
     );
   }
 
-  void gettingStudents() async{
+  void gettingStudents(main_model model) async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String code = sharedPreferences.getString("user");
     String teacher = sharedPreferences.getString("tcode");
     String school = sharedPreferences.getString("icode");
-    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/attendance/$school/$_currentClass/$_section".toLowerCase() );
+    String cl = model.Classes;
+    String se = model.section;
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/attendance/$school/$cl/$se".toLowerCase() );
     print(uri.toString());
     var res = await http.get(uri, headers: {
       "x-access-token": code,
@@ -234,7 +239,9 @@ class _attendance_g_state extends State<attendance_g> {
     print(code);
     String teacher = sharedPreferences.getString("tcode");
     String school = sharedPreferences.getString("icode");
-    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/attendance/$school/$_currentClass/$_section".toLowerCase() );
+    String cl = m.Classes;
+    String se = m.section;
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/attendance/$school/$cl/$se".toLowerCase() );
     print(uri.toString());
     print(uri.toString());
     print("$Year$Month$day");
@@ -247,7 +254,7 @@ class _attendance_g_state extends State<attendance_g> {
       "date":"\"$Year$Month$day\"",
       "tcode":teacher,
       "period":Period,
-      "subject":"geo"
+      "subject":m.Current_Subject
 
     });
     var res_total = jsonDecode(res.body);

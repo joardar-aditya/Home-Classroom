@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studieteacher/basic/basics.dart';
 import 'package:studieteacher/chapters/container_chapters.dart';
 import 'package:studieteacher/colors/colors.dart';
 import 'package:studieteacher/models/Doubts.dart';
+import 'package:http/http.dart' as http;
 
 
 class add_ans extends StatefulWidget {
@@ -18,6 +20,7 @@ class add_ans extends StatefulWidget {
 class _stateAdd extends State<add_ans> {
   Doubts c;
   _stateAdd(this.c);
+  TextEditingController controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
 
@@ -44,7 +47,9 @@ class _stateAdd extends State<add_ans> {
                   flex:4, fit: FlexFit.loose,
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 5),
-                    child:TextField(decoration: InputDecoration(
+                    child:TextField(
+                      controller: controller,
+                      decoration: InputDecoration(
                         hintStyle: TextStyle(color:Colors.pinkAccent, fontSize: 16),
                         hintText: "Write a Description",
                         filled: true,
@@ -183,13 +188,40 @@ class _stateAdd extends State<add_ans> {
                 ),
                 Flexible(
                     fit: FlexFit.loose,
-                    child:Container(
+                    child:InkWell(
+                        onTap: () async{
+                          SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                          String code = sharedPreferences.getString("user");
+                          print(code);
+                          String teacher = sharedPreferences.getString("tcode");
+                          String school = sharedPreferences.getString("icode");
+                          String cl = c.cl;
+                          String se = c.sec;
+                          Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com","/teacher/chapters/doubts/resolve/$school/$cl/$se" );
+                          var res = await http.post(uri, headers: {
+                            "x-access-token": code,
+                            "type": "teacher"
+                          }, body: {
+                            "id":c.chapterId,
+                             "chapterName":c.chapterName,
+                            "answer": controller.text,
+                            "sname":c.name,
+                            "scode": c.studentId
+                          });
+
+                          print(c.chapterId);
+                          print(controller.text);
+
+                          print(res.body);
+                        },
+
+                        child:Container(
                       alignment: Alignment.centerRight,
                       height:50,
                       width: 50,
                       decoration: BoxDecoration(shape: BoxShape.circle, color:Colors_pack.color),
                       child: Center(child:Icon(Icons.arrow_forward_ios, size: 40, color: Colors.white,)),
-                    )
+                    ))
                 )
 
               ],

@@ -316,7 +316,8 @@ class _assignState extends State<assign> {
                 child:Row(children:[Expanded(flex:4,child: DropdownButton<String>(
                   value: model.Current_Subject,
                   onChanged: (String string) {_changeSubject(string);
-                  model.ChangeSubject(string);},
+                  model.ChangeSubject(string);
+                  model.getChapters();},
                   underline: Container(),
                   iconSize: 0,
                   selectedItemBuilder: (BuildContext context) {
@@ -529,7 +530,7 @@ class _assignState extends State<assign> {
                                                               color: Colors.white),
                                                         )]),
                                                   onPressed: () async{
-                                                    File document = await  FilePicker.getFile();
+                                                    File document = await  FilePicker.getFile(type: FileType.image);
                                                     print(document.path);
                                                     model.ChangeFile(document);
                                                   },
@@ -560,7 +561,7 @@ class _assignState extends State<assign> {
                                                               color: Colors.white),
                                                         )]),
                                                   onPressed: () async{
-                                                    File document = await  FilePicker.getFile();
+                                                    File document = await  FilePicker.getFile(type: FileType.image);
                                                     print(document.path);
                                                     model.ChangeFile(document);
                                                   },
@@ -742,7 +743,7 @@ class _assignState extends State<assign> {
                   int month = _months.indexOf(_submitMonth) + 1;
                   int day = int.parse(_submitday);
                   model.ChangeDate(DateTime(year, month, day));
-                  uploadDocument(model.hwSub, model.hwFile, model.hwTitle, model.hwDesc, model2.Classes, model2.section, model2.Current_Subject, model2.current_chapter);
+                  uploadDocument(model2,model.hwSub, model.hwFile, model.hwTitle, model.hwDesc, model2.Classes, model2.section, model2.Current_Subject, model2.current_chapter);
                 },
                 color: Color(0xff261FFF),
                 disabledColor: Colors.grey,
@@ -759,7 +760,7 @@ class _assignState extends State<assign> {
         )])
     ]);
   }
-  void uploadDocument(DateTime submission, File filename, String title, String description, String classe, String sec, String subject, String chapter) async {
+  void uploadDocument(main_model model,DateTime submission, File filename, String title, String description, String classe, String sec, String subject, String chapter) async {
     List<String> _months = [
       "JAN",
       "FEB",
@@ -790,9 +791,9 @@ class _assignState extends State<assign> {
     request.fields["tcode"] = tcode;
     request.fields["icode"] = school;
     request.fields["class"] = classe;
-    request.fields["sec"] = "a";
-    request.fields["subject"] = "maths";
-    request.fields["chapter"] = "Trigonometry";
+    request.fields["sec"] = model.Classes;
+    request.fields["subject"] = model.Current_Subject;
+    request.fields["chapter"] = model.current_chapter;
     String month = submission.month.toString();
     String day = submission.day.toString();
     if(submission.month<10){
