@@ -20,7 +20,7 @@ class container_chapters extends StatelessWidget {
           color: Colors.grey[300]),
       margin: EdgeInsets.all(5),
       child:Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
               decoration: BoxDecoration(
@@ -64,6 +64,11 @@ class container_chapters extends StatelessWidget {
           Container(
             margin: EdgeInsets.all(20),
             child:Text(doubt.message)
+          ),
+          (doubt.reply.isEmpty)?Container():Container(
+            padding: EdgeInsets.all(20),
+            color: Colors.pinkAccent,
+            child: Text(doubt.reply, style: TextStyle(color: Colors.white),),
           )
 
         ],

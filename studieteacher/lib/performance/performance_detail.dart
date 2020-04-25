@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:studieteacher/colors/colors.dart';
+import 'package:studieteacher/models/performance_model.dart';
 import 'package:studieteacher/performance/pref_container.dart';
 
+import '../Student.dart';
+
 class performance_detail extends StatefulWidget {
-  var name;
-  var code;
-  performance_detail(this.name, this.code);
+  Student student;
+  performance_detail(this.student);
   @override
-  State<StatefulWidget> createState() => _state(name, code);
+  State<StatefulWidget> createState() => _state(student);
 
 }
 
 class _state extends State<performance_detail> {
 
-  var name;
-  var code;
+  Student s;
   static List<String> options = ["Overall", "Homework", "Exam", "Quiz"];
   static List<String> icons_options = ["assets/Group26.png", "assets/Group46.png", "assets/Group4.png", "assets/Group93.png"];
   static var currentPressed = options[0];
   static var currentSubject = subjects[0];
   static List<String> subjects = ["Summary", "Mathematics", "Physics", "Chemistry"];
   static List<String> subjects_icons = ["assets/Group81.png", "assets/Group84.png", "assets/Group49.png", "assets/Group63.png"];
-  _state(this.name, this.code);
+  _state(this.s);
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -36,7 +38,7 @@ class _state extends State<performance_detail> {
             margin: EdgeInsets.all(20),
             decoration: BoxDecoration(color:Colors.grey[300],
             borderRadius: BorderRadius.circular(10)),
-          child: Row(
+          child:  Consumer<performance_model>(builder: (context, model, child) { return Row(
             children: <Widget>[
               Container(
                 margin: EdgeInsets.all(20),
@@ -48,13 +50,13 @@ class _state extends State<performance_detail> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text("Subhojit Dey", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
-                  Text("Class 10 Sec B", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[700]),),
+                  Text(s.Name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+                  Text("Class " + model.classe +  " Sec " + model.section, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[700]),),
                   Text("Overall Grade A+", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[700]),)
                 ],
               )
             ],
-          ),
+          );}),
         ),
         Container(
             margin: EdgeInsets.all(20),

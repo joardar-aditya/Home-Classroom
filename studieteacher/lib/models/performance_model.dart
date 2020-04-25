@@ -10,18 +10,22 @@ class performance_model extends ChangeNotifier {
   var e_p = "0";
   var q_p = "0";
   var cl_p = "0";
-  var classe = "1";
+  var classe = "5";
   var section = "a";
-  var subject = "geo";
+  var subject = "all";
   List<Student> current = [];
 
   void ChangeClass(String c){
     classe = c;
+    getPerformance();
+
     notifyListeners();
   }
 
   void ChangeSection(String s){
+    getPerformance();
     section = s;
+    notifyListeners();
   }
   performance_model(){
     getPerformance();
@@ -70,9 +74,9 @@ class performance_model extends ChangeNotifier {
   }
 
   String get Overall {
-    int e = int.parse(e_p);
-    int h = int.parse(hw_perf);
-    int q = int.parse(q_p);
+    double e = double.parse(e_p);
+    double h = double.parse(hw_perf);
+    double q = double.parse(q_p);
     return ((e+h+q)/3).round().toString();
   }
 
@@ -97,6 +101,7 @@ class performance_model extends ChangeNotifier {
     if(res.statusCode == 200){
       if(j["status"]=="success"){
         q_p = j["data"].toString();
+        notifyListeners();
       }
     }
 
@@ -112,12 +117,13 @@ class performance_model extends ChangeNotifier {
     if(res_h.statusCode == 200){
       if(j["status"]=="success"){
         hw_perf = j_h["data"].toString();
+        notifyListeners();
       }
     }
     Uri uri_e = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/stats/exam/$icode/$classe/$section", {
       "sub":subject
     });
-    var res_e = await http.get(uri, headers: {
+    var res_e = await http.get(uri_e, headers: {
       "x-access-token": code,
       "type": type
     });
@@ -126,6 +132,7 @@ class performance_model extends ChangeNotifier {
     if(res_e.statusCode == 200){
       if(j_e["status"]=="success"){
         e_p = j_e["data"].toString();
+        notifyListeners();
       }
     }
 
@@ -133,6 +140,7 @@ class performance_model extends ChangeNotifier {
 
   void ChangeSubject(String string){
     subject =string;
+    getPerformance();
     notifyListeners();
   }
   

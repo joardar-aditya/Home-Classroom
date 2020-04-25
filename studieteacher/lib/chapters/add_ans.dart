@@ -195,6 +195,7 @@ class _stateAdd extends State<add_ans> {
                           print(code);
                           String teacher = sharedPreferences.getString("tcode");
                           String school = sharedPreferences.getString("icode");
+                          String name = sharedPreferences.getString("name");
                           String cl = c.cl;
                           String se = c.sec;
                           Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com","/teacher/chapters/doubts/resolve/$school/$cl/$se" );
@@ -205,8 +206,10 @@ class _stateAdd extends State<add_ans> {
                             "id":c.chapterId,
                              "chapterName":c.chapterName,
                             "answer": controller.text,
-                            "sname":c.name,
-                            "scode": c.studentId
+                            "tname":"Sanket Sarkar",
+                            "tcode": teacher,
+                            "scode": c.studentId,
+                            "asked": DateTime.now().millisecondsSinceEpoch.toString(),
                           });
 
                           print(c.chapterId);

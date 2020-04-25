@@ -25,7 +25,9 @@ class _statePerf extends State<perf_start>{
   static var currentPressed = options[0];
   static var currentSubject = subjects[0];
   static List<String> subjects = ["Summary", "Mathematics", "Physics", "Chemistry"];
+  static List<String> subject_code = ["all", "math", "physics", "chem" ];
   static List<String> subjects_icons = ["assets/Group81.png", "assets/Group84.png", "assets/Group49.png", "assets/Group63.png"];
+  TextEditingController control = new TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
@@ -59,13 +61,14 @@ class _statePerf extends State<perf_start>{
             margin: EdgeInsets.all(10),
             child: Text('Search for students', style: TextStyle(color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),),
           ),
-          Container(
+          Consumer<performance_model>(builder: (context, model, child){ return Container(
             margin: EdgeInsets.all(10),
             child:TextField(
+              controller: control,
     decoration: InputDecoration(
       suffixIcon: InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => performance_Search()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => performance_Search(model,control.text )));
         },
         child:Container(
           height:25,
@@ -83,7 +86,7 @@ class _statePerf extends State<perf_start>{
     fillColor: Colors.grey[300],
     border: OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: BorderSide.none)),
             )
-          ),
+          );}),
           Container(
               margin: EdgeInsets.all(10),
               child:
@@ -95,10 +98,11 @@ class _statePerf extends State<perf_start>{
                   FittedBox(fit:BoxFit.contain,child:Padding(padding:EdgeInsets.all(10),child:
                   Text("Class", style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 24),))),
 
-                  FittedBox(fit:BoxFit.contain,child:Padding(padding: EdgeInsets.symmetric(horizontal: 5),child:
+                  Consumer<performance_model>(builder: (context, model, child) { return FittedBox(fit:BoxFit.contain,child:Padding(padding: EdgeInsets.symmetric(horizontal: 5),child:
                   DropdownButton<String>(
                     value: _currentClass,
-                    onChanged: (String string) => _changeClass(string),
+                    onChanged: (String string) { _changeClass(string);
+                    model.ChangeClass(string);},
                     underline: Container(),
                     iconSize: 0,
                     selectedItemBuilder: (BuildContext context) {
@@ -121,16 +125,19 @@ class _statePerf extends State<perf_start>{
                         value: item,
                       );
                     }).toList(),
-                  ),)) ,
+                  ),));}) ,
                   FittedBox(fit: BoxFit.contain,
                       child:
                       Padding(padding:EdgeInsets.all(10),child:
                       Text("Sec", style: TextStyle(color:Colors.black, fontWeight: FontWeight.bold, fontSize: 24),))),
-                  FittedBox(fit:BoxFit.contain,child:
+                 Consumer<performance_model>(builder: (context, model,child) { return  FittedBox(fit:BoxFit.contain,child:
                   Padding(padding: EdgeInsets.symmetric(horizontal: 5),child:
                   DropdownButton<String>(
                     value: _section,
-                    onChanged: (String string) => _changeSections(string),
+                    onChanged: (String string) {_changeSections(string);
+                    model.ChangeSection(string.toLowerCase());
+
+                    },
                     underline: Container(),
                     iconSize: 0,
                     selectedItemBuilder: (BuildContext context) {
@@ -153,7 +160,7 @@ class _statePerf extends State<perf_start>{
                         value: item,
                       );
                     }).toList(),
-                  ),) ),
+                  ),) );}),
 
 
                 ],
@@ -196,7 +203,7 @@ class _statePerf extends State<perf_start>{
                     onTap: () {
                   setState(() {
                     currentSubject = subjects[ind];
-                    model.ChangeSubject(currentSubject);
+                    model.ChangeSubject(subject_code[ind]);
                   });
 
                 },

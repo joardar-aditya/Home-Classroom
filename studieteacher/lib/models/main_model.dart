@@ -13,7 +13,7 @@ class main_model extends ChangeNotifier {
   String teacher ;
   List<String> teachers = [];
   List<String> subjects = [];
-  String _current_subject ;
+  String _current_subject = "math" ;
   static var Classes_List = List<String>.generate(12, (index) => (index + 1).toString()).toList();
   static final List<String> Sections = ["A", "B", "C", "D", "E", "F", ];
   List<Chapter> list_of_chapters = [];

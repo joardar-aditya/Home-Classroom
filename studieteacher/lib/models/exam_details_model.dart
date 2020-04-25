@@ -11,10 +11,20 @@ class exam_details_model extends ChangeNotifier {
   List<Exam> upcoming = [];
   List<Exam> leftout = [];
   List<Exam> past = [];
-
+  String cl = "1";
+  String type = "1";
+  int mon = DateTime.now().month;
+  int year = DateTime.now().year;
   exam_details_model() {
     GetUpcomingExams();
-    PastExams(DateTime.now().month, DateTime.now().year);
+    PastExams(mon, year);
+  }
+
+  void ChangeClass(String c){
+    cl = c;
+    notifyListeners();
+    GetUpcomingExams();
+    PastExams(mon, year);
   }
 
 
@@ -23,7 +33,7 @@ class exam_details_model extends ChangeNotifier {
     String code = sharedPreferences.getString("user");
     String teacher = sharedPreferences.getString("tcode");
     String school = sharedPreferences.getString("icode");
-    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com","/teacher/exam/$school/1/1");
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com","/teacher/exam/$school/$cl/1");
     var res = await  http.get(uri, headers: {
       "x-access-token":code,
       "type":"teacher",
@@ -47,11 +57,12 @@ class exam_details_model extends ChangeNotifier {
           String tea = _current["author"];
           List v = _current["chapters"];
           List<ExamChapter> e = [];
+          if(today.isAtSameMomentAs(DateTime.parse(_dat)) || today.isBefore(DateTime.parse(_dat))){
           for(int j=0; j<v.length; j++){
             e.add(ExamChapter(v[j]["name"], v[j]["desc"]));
           }
           c.add(Exam(id,_ch, _dat,tea, sub , _cl,_sec, e));
-        }
+        }}
         upcoming = c;
         print(upcoming);
         notifyListeners();
@@ -71,7 +82,7 @@ class exam_details_model extends ChangeNotifier {
     String school = sharedPreferences.getString("icode");
     Uri uri = Uri.https(
         "studie-server-dot-project-student-management.appspot.com",
-        "/teacher/exam/$school/1/1");
+        "/teacher/exam/$school/$cl/1");
     var res = await http.get(uri, headers: {
       "x-access-token": code,
       "type": "teacher",
@@ -96,12 +107,13 @@ class exam_details_model extends ChangeNotifier {
           String tea = _current["author"];
           List v = _current["chapters"];
           List<ExamChapter> e = [];
+          if(DateTime.parse(_dat).month == Month && DateTime.parse(_dat).year == Year){
           for(int j=0; j<v.length; j++){
             e.add(ExamChapter(v[j]["name"], v[j]["desc"]));
           }
           c.add(Exam(id,_ch, _dat,tea, sub , _cl,_sec, e));
         }
-        }
+        }}
         print(c);
         past = c;
         notifyListeners();
