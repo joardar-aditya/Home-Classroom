@@ -28,14 +28,28 @@ class exam_model extends ChangeNotifier {
   List<Exam> _upcomingexams = [];
   List<Exam> _previousexams = [];
   int _currentType = 1;
+  int month = DateTime.now().month;
+  int year = DateTime.now().year;
 
   int get Current {
     return _currentType;
   }
 
+  void ChangeMonth(int m){
+    month = m;
+    GetPrevious(month, year);
+    notifyListeners();
+  }
+
+  void ChangeYear(int y){
+    year = y;
+    GetPrevious(month, year);
+    notifyListeners();
+  }
+
   exam_model() {
     GetExams();
-    GetPrevious();
+    GetPrevious(month, year);
   }
   Future<bool> GetExams() async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -43,8 +57,8 @@ class exam_model extends ChangeNotifier {
     print(code);
     String teacher = sharedPreferences.getString("tcode");
     String school = sharedPreferences.getString("icode");
-
-    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/student/exam/$school/1/$_currentType");
+    String cl = sharedPreferences.getString("class");
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/student/exam/$school/$cl/$_currentType");
     var res = await http.get(uri,headers: {
       "x-access-token":code,
       "type":"student"
@@ -59,6 +73,15 @@ class exam_model extends ChangeNotifier {
              for(int i=0; i<ex.length; i++){
                Map _current = ex[i]["data"];
                String _fullMa = _current["full_marks"];
+               String avgMarks = _current["avgMarks"].toString();
+               String maxMar = _current["maxMarks"].toString();
+               List students = _current["student_list"];
+               String ob_ma = "";
+               for(int l=0; l<students.length; l++) {
+                 if(students[l]["scode"]==teacher){
+                   ob_ma = students[l]["marks_obtained"];
+                 }
+               }
                String _newDate = "NA";
                if(_current["date"]!=null){
                  DateTime _dat = DateTime.parse(_current["date"]);
@@ -70,7 +93,7 @@ class exam_model extends ChangeNotifier {
                    for(int p=0; p<_ch.length;p++){
                      lk.add(Sy_Ch(_ch[p]["name"], _ch[p]["desc"]));
                    }
-                   c.add(Exam(_newDate, _fullMa, lk, _current["section"].toString(), _current["class"].toString(), _current["author"].toString(), _current["sub"].toString()));
+                   c.add(Exam(_newDate,ob_ma,maxMar, _fullMa,avgMarks, lk, _current["section"].toString(), _current["class"].toString(), _current["author"].toString(), _current["sub"].toString()));
                  }
                }else{
                  continue;
@@ -88,14 +111,15 @@ class exam_model extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> GetPrevious() async{
+  Future<bool> GetPrevious(int month, int year) async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String code = sharedPreferences.getString("user");
     print(code);
     String teacher = sharedPreferences.getString("tcode");
     String school = sharedPreferences.getString("icode");
+    String clas = sharedPreferences.getString("class");
 
-    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/student/exam/$school/1/$_currentType");
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/student/exam/$school/$clas/$_currentType");
     var res = await http.get(uri,headers: {
       "x-access-token":code,
       "type":"student"
@@ -110,18 +134,27 @@ class exam_model extends ChangeNotifier {
         for(int i=0; i<ex.length; i++){
           Map _current = ex[i]["data"];
           String _fullMa = _current["full_marks"];
+          String avg_marks = _current["avgMarks"].toString();
+          String max_marks = _current["maxMarks"].toString();
           String _newDate = "NA";
+          String ob_ma = "NA";
+          List students = _current["student_list"];
+          for(int l=0; l<students.length; l++) {
+            if(students[l]["scode"]==teacher.toString()){
+              ob_ma = students[l]["marks_obtained"];
+            }
+          }
           if(_current["date"]!=null){
             DateTime _dat = DateTime.parse(_current["date"]);
-            _newDate = _dat.day.toString() +" "+ weeks[_dat.weekday -1] +" "+ _months[_dat.month-1]+" "+ _dat.year.toString();
-            if(_dat.isBefore(DateTime.now())){
+            _newDate = _current["date"];
+            if(_dat.isBefore(DateTime.now()) && (_dat.month == month && _dat.year == year)){
 
-              List _ch = jsonDecode(_current["chapters"]);
+              List _ch = _current["chapters"];
               List<Sy_Ch> lk = [];
               for(int p=0; p<_ch.length;p++){
                 lk.add(Sy_Ch(_ch[p]["name"], _ch[p]["desc"]));
               }
-              c.add(Exam(_newDate, _fullMa, lk, _current["section"].toString(), _current["class"].toString(), _current["author"].toString(), _current["sub"].toString()));
+              c.add(Exam(_newDate,ob_ma,max_marks, _fullMa,avg_marks, lk, _current["section"].toString(), _current["class"].toString(), _current["author"].toString(), _current["sub"].toString()));
             }
           }else{
             continue;

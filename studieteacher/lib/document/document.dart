@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studieteacher/basic/basics.dart';
@@ -22,7 +23,7 @@ class document extends StatefulWidget {
 class _stateDocu extends State<document> {
 
   final List<String> _classes = List<String>.generate(12, (index) => (index + 1).toString()).toList();
-  final List<String> _sections = ["A", "B", "C", "D", "E", "F", "ALL"];
+  final List<String> _sections = ["A", "B", "C", "D", "E", "F"];
   static String _currentClass = "5";
   static String _section = "A";
   var loading = false;
@@ -236,7 +237,7 @@ class _stateDocu extends State<document> {
                                                                 style: TextStyle(
                                                                     color: Colors.white),
                                                               )]),
-                                                        onPressed: () async {File document = await FilePicker.getFile(type: FileType.image);
+                                                        onPressed: () async {File document = await  ImagePicker.pickImage(source: ImageSource.camera);
                                                         model.change_file(document);
                                                         globalKey.currentState.showSnackBar(new SnackBar(content:Text("File taken " + document.path)));},
                                                         disabledColor:
@@ -341,19 +342,28 @@ class _stateDocu extends State<document> {
           ));
           }
     void  uploadDocument(File filename, desc, classes, sec) async {
-        Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/docs/a101/$classes/$sec/" );
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      String code = preferences.getString("user");
+      String tcode = preferences.getString("tcode");
+      String school = preferences.getString("icode");
+
+      if(filename == null){
+        globalKey.currentState.showSnackBar(SnackBar(content: Text("No file Uploaded"),));
+        return;
+      }else {
+        Uri uri = Uri.https(
+            "studie-server-dot-project-student-management.appspot.com",
+            "/teacher/docs/$school/$classes/$sec/".toLowerCase());
         print(uri.toString());
         setState(() {
           loading = true;
         });
         var request = await http.MultipartRequest('POST', uri);
         print(filename.path);
-        var file = await http.MultipartFile.fromPath('doc', filename.path, contentType:MediaType("image", "jpeg"));
+        var file = await http.MultipartFile.fromPath(
+            'doc', filename.path, contentType: MediaType("image", "jpeg"));
         request.files.add(file);
         print(file.contentType.toString());
-        SharedPreferences preferences = await SharedPreferences.getInstance();
-        String code = preferences.getString("user");
-        String tcode = preferences.getString("tcode");
         print(code);
         request.headers["x-access-token"] = code;
         request.headers["type"] = "teacher";
@@ -362,26 +372,28 @@ class _stateDocu extends State<document> {
         var res = await request.send();
         var data = await res.stream.bytesToString();
         var js = json.decode(data);
-          if(res.statusCode==200){
-            if(js["status"]=="success"){
-              globalKey.currentState.showSnackBar(SnackBar(content: Text('Document Uploaded Successfully'),));
-              setState(() {
-                loading=false;
-              });
-            }else{
-              globalKey.currentState.showSnackBar(SnackBar(content: Text("Sorry, The Document couldn't be sent, check the format again"),));
-              setState(() {
-                loading=false;
-              });
-            }
-
-          }else {
-            globalKey.currentState.showSnackBar(SnackBar(content: Text('Problem in Internet Connection'),));
+        if (res.statusCode == 200) {
+          if (js["status"] == "success") {
+            globalKey.currentState.showSnackBar(
+                SnackBar(content: Text('Document Uploaded Successfully'),));
             setState(() {
-              loading=false;
+              loading = false;
+            });
+          } else {
+            globalKey.currentState.showSnackBar(SnackBar(content: Text(
+                "Sorry, The Document couldn't be sent, check the format again"),));
+            setState(() {
+              loading = false;
             });
           }
-
+        } else {
+          globalKey.currentState.showSnackBar(
+              SnackBar(content: Text('Problem in Internet Connection'),));
+          setState(() {
+            loading = false;
+          });
+        }
+      }
 
     }
 

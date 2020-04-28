@@ -157,8 +157,8 @@ class _stateAddingScore extends State<adding_scores> {
                             width:50,
                             child:TextFormField(
                             onChanged: (value) {
-                              stud[index].ChangeScore(value);
-                            },
+                                stud[index].ChangeScore(value);
+                              },
                             decoration: InputDecoration(
                                 fillColor: Colors.grey[300],
                                 filled: true,
@@ -211,8 +211,15 @@ class _stateAddingScore extends State<adding_scores> {
     String school = sharedPreferences.getString("icode");
     List<String> lists = [];
     for(int j=0; j<stud.length; j++){
-      lists.add(stud[j].Data);
-    }
+      if(stud[j].score >current_Exam.full_marks) {
+        globalKey.currentState.showSnackBar(SnackBar(
+          content: Text(
+              "Marks cannot be greater than Maximum marks"),));
+        lists = [];
+        return null;
+      }else {
+        lists.add(stud[j].Data);
+      }}
     print(current_Exam.Id);
     Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/exam");
     var res = await http.patch(uri, headers: {
@@ -223,8 +230,13 @@ class _stateAddingScore extends State<adding_scores> {
       "marksList": lists.toString()
     });
 
-    globalKey.currentState.showSnackBar(SnackBar(content: Text(res.body),));
-
+    if(res.statusCode == 200) {
+      globalKey.currentState.showSnackBar(
+          SnackBar(content: Text(jsonDecode(res.body)["status"]),));
+    }else{
+      globalKey.currentState.showSnackBar(
+          SnackBar(content: Text("failure")));
+    }
 
   }
 

@@ -5,8 +5,10 @@ import 'package:calendarro/date_utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:studieteacher/Homework/homework.dart';
 import 'package:studieteacher/Homework/hw.dart';
 import 'package:studieteacher/colors/colors.dart';
 import 'package:calendarro/calendarro.dart';
@@ -530,7 +532,7 @@ class _assignState extends State<assign> {
                                                               color: Colors.white),
                                                         )]),
                                                   onPressed: () async{
-                                                    File document = await  FilePicker.getFile(type: FileType.image);
+                                                    File document = await  ImagePicker.pickImage(source:ImageSource.camera);
                                                     print(document.path);
                                                     model.ChangeFile(document);
                                                   },
@@ -780,6 +782,32 @@ class _assignState extends State<assign> {
     String code = sharedPreferences.getString("user");
     String school = sharedPreferences.getString("icode");
     String tcode = sharedPreferences.getString("tcode");
+    if(filename == null){
+       Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/homework");
+       var res = await http.post(uri, body: {
+       "tcode" : tcode,
+       "icode" : school,
+       "class" : model.Classes,
+       "sec" : model.section.toLowerCase(),
+       "subject" : model.Current_Subject,
+       "chapter" : model.current_chapter,
+       },
+       headers: {
+         "x-access-token": code,
+         "type": "teacher"
+       });
+       print(res.body);
+       if(res.statusCode == 200) {
+         if(jsonDecode(res.body)["status"] == "success"){
+           Scaffold.of(context).showSnackBar(SnackBar(content: Text("Homework Uploded Successfully"),));
+           setState(() {
+             done = true;
+           });
+           return;
+         }
+       }
+
+    }
     Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/homework" );
     var request = await http.MultipartRequest('POST', uri);
     print(filename.path);
@@ -790,8 +818,8 @@ class _assignState extends State<assign> {
     request.headers["type"] = "teacher";
     request.fields["tcode"] = tcode;
     request.fields["icode"] = school;
-    request.fields["class"] = classe;
-    request.fields["sec"] = model.Classes;
+    request.fields["class"] = model.Classes;
+    request.fields["sec"] = model.section.toLowerCase();
     request.fields["subject"] = model.Current_Subject;
     request.fields["chapter"] = model.current_chapter;
     String month = submission.month.toString();
@@ -817,16 +845,19 @@ class _assignState extends State<assign> {
     print("I was called");
     var res = await request.send();
     var res_total  = await res.stream.bytesToString();
-    var j = jsonDecode(res_total);
-    print(j.toString());
+    print(res_total);
     print(res.statusCode);
     if(res.statusCode==200) {
+      var j = jsonDecode(res_total);
       if(j["status"]=="success"){
            setState(() {
              done=true;
            });
         
+      }else{
       }
+    }else{
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text("not done"),));
     }
   }
 

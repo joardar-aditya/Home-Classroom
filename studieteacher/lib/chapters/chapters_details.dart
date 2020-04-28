@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studieteacher/chapters/container_chapters.dart';
@@ -31,6 +33,7 @@ class _stateDetails extends State<chapters_details> {
       "chapterName":_chapter.Name,
     } );
   }
+  GlobalKey<ScaffoldState> globalKey = new GlobalKey();
   @override
   Widget build(BuildContext context) {
 
@@ -38,6 +41,7 @@ class _stateDetails extends State<chapters_details> {
     String cl = _chapter.classe;
     String sec = _chapter.section;
     return Scaffold(
+      key: globalKey,
         appBar:  AppBar(
           elevation: 0.0,
           leading: RaisedButton(color:Colors.white, elevation:0.0, onPressed:() {Navigator.pop(context);},child:Image(image:AssetImage('assets/back.png'), height: 50,) ),
@@ -73,8 +77,8 @@ class _stateDetails extends State<chapters_details> {
               ],
             )
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Container(
                   margin: EdgeInsets.all(20),
@@ -103,11 +107,47 @@ class _stateDetails extends State<chapters_details> {
                         "type":"teacher"
                       });
                      print(res.body);
+                     var j = jsonDecode(res.body);
+                     if(res.statusCode == 200) {
+                        if(j["status"]=="success"){
+                          globalKey.currentState.showSnackBar(SnackBar(content: Text("Chapter Ended!"),));
+                        }else{
+                          globalKey.currentState.showSnackBar(SnackBar(content: Text("Oops, the chapter could't be ended!"),));
+                        }
+                     }
 
 
                     }, color:Colors_pack.color,
                 child:Center(child: Text('Start', style: TextStyle(color:Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),)),
               )),
+              Container(
+                  margin: EdgeInsets.all(20),
+                  child:
+                  SizedBox(
+                    height: 40,
+                    width: 100,
+                    child: RaisedButton(shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        onPressed: () async{
+                          SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+                          String code = sharedPreferences.getString("user");
+                          print(code);
+                          String teacher = sharedPreferences.getString("tcode");
+                          String school = sharedPreferences.getString("icode");
+                          Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/chapters/$school/$cl/$sec");
+                          var res= await http.patch(uri, body: {
+                            "id": _chapter.Id,
+                            "chapterName": _chapter.Name,
+                            "ongoing": "false"
+                          }, headers: {
+                            "x-access-token": code,
+                            "type":"teacher"
+                          });
+                          print(res.body);
+
+
+                        }, color:Colors_pack.color,
+                        child:Center(child: Text('End', style: TextStyle(color:Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),)),
+                  )),
             ],
           ),
           Container(

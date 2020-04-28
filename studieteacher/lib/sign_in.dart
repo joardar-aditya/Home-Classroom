@@ -113,13 +113,9 @@ class _sign_in_state extends State<sign_in> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          color: Colors.grey[200],
-        ),
         margin: EdgeInsets.all(10.0),
-        child: Stack(
-          alignment: Alignment.bottomCenter,
+        child: ListView(
+          shrinkWrap: true,
           children: <Widget>[
             loading?Container(child:Center(
               child: CircularProgressIndicator(),
@@ -145,10 +141,6 @@ class _sign_in_state extends State<sign_in> {
                               ),
                               filled: true,
                               fillColor: Colors.white,
-                              border: new OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: new BorderRadius.circular(25.0),
-                              ),
                             )),
                       ),
                       Container(
@@ -167,10 +159,6 @@ class _sign_in_state extends State<sign_in> {
                               fillColor: Colors.white,
                               focusColor: Colors.blue,
                               filled: true,
-                              border: new OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: new BorderRadius.circular(25.0),
-                              ),
                             )),
                       ),
                    Container(
@@ -190,17 +178,15 @@ class _sign_in_state extends State<sign_in> {
                               fillColor: Colors.white,
                               focusColor: Colors.blue,
                               filled: true,
-                              border: new OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: new BorderRadius.circular(25.0),
-                              ),
                             )),
                       ),
 
                 ],
               ),
             ),
-            Positioned(bottom:-20.0,child:ButtonTheme(
+            Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child:ButtonTheme(
             minWidth: 200.0,
             height: 40.0,child:
             RaisedButton(
@@ -229,7 +215,7 @@ class _sign_in_state extends State<sign_in> {
                 //Navigator.push(context, MaterialPageRoute(builder: (context) => starting()));
               },
               child: Text(
-                'SIGN IN',
+                'LOG IN',
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
@@ -238,7 +224,6 @@ class _sign_in_state extends State<sign_in> {
               disabledColor: Colors.blue,
             )))
           ],
-          overflow: Overflow.visible,
         ));
   }
 }

@@ -3,11 +3,16 @@ class question {
   var correct_a;
   var milli;
   var title;
+  var file ;
 
-  question(this.answers, this.correct_a, this.title);
+  question(this.file,this.answers, this.correct_a, this.title);
 
   String get quesTitle {
     return title;
+  }
+
+  String get Status {
+    return file.toString();
   }
 
   String get quesmilli {

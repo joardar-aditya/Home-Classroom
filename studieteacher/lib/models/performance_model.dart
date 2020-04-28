@@ -74,9 +74,21 @@ class performance_model extends ChangeNotifier {
   }
 
   String get Overall {
-    double e = double.parse(e_p);
-    double h = double.parse(hw_perf);
-    double q = double.parse(q_p);
+    double e = 0;
+    double h = 0;
+    double q = 0;
+    if(e_p is int || e_p is double){
+      e = double.parse(e_p);
+    }
+    if(hw_perf != null){
+      h = double.parse(hw_perf);
+    }
+    if(q_p != null){
+      q = double.parse(q_p);
+    }
+
+
+
     return ((e+h+q)/3).round().toString();
   }
 
@@ -145,16 +157,29 @@ class performance_model extends ChangeNotifier {
   }
   
   String get HW_perf {
-    return hw_perf;
+    if(hw_perf == null || hw_perf == "null"){
+      return "0";
+    }else{
+    return hw_perf;}
   }
 
   String get Exam_perf {
-    return e_p;
-  }
+    if(e_p == null || e_p == "null"){
+      return "0";
+    }else {
+      return e_p;
+    }}
   String get Quiz_perf {
-    return q_p;
-  }
+    if(q_p == null || q_p == "null"){
+      return "0";
+    }else {
+      return q_p;
+    }}
   String get Class_perf {
-    return cl_p;
+    if(cl_p == null || cl_p == "null"){
+      return "0";
+    }else {
+      return cl_p;
+    }
   }
 }

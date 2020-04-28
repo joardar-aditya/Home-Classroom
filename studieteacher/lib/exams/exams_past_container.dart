@@ -52,7 +52,7 @@ class exam_past_container extends StatelessWidget {
                 Container(margin: EdgeInsets.all(10),
                     child:Text(_current.NameTeacher, textAlign:TextAlign.left,style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),)),
                Container(
-                  child: Center(child: Text("Maths",textAlign: TextAlign.right, style: TextStyle(color:Colors.white, fontSize: 18,fontWeight: FontWeight.bold),),),
+                  child: Center(child: Text(_current.Subject,textAlign: TextAlign.right, style: TextStyle(color:Colors.white, fontSize: 18,fontWeight: FontWeight.bold),),),
                 )
               ],
             ),

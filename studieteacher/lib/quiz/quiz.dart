@@ -15,10 +15,11 @@ class quiz {
   var syllabus = "na";
   var total_part = "na";
   var parti = "na";
+  String Id = "";
   var total_marks = "na";
-  var result_t = [];
-
-  quiz(this.classes, this.section, this.title, this.subject, this.author, this.due_date,this.syllabus, this.parti, this.total_part, this.total_marks) ;
+  List<results> result_t = [];
+  var students_part = [];
+  quiz(this.Id, this.classes, this.section, this.title, this.subject, this.author, this.due_date,this.syllabus, this.parti, this.total_part, this.total_marks) ;
 
 
 
@@ -27,7 +28,14 @@ class quiz {
 
   }
 
+  void AddStudents(String s){
+    if(!students_part.contains(s)){
+        students_part.add(s);
+    }
+  }
+
   void AddResult(results r) {
+
     result_t.add(r);
 
   }

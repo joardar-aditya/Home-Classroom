@@ -18,14 +18,15 @@ import 'models/main_model.dart';
 
 class attendance_g extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() => _attendance_g_state(mq, Month, Year, day);
+  State<StatefulWidget> createState() => _attendance_g_state(mq, Month, Year, day, Period);
   main_model mq;
+  var Period = "";
   var Month = "";
   var Year ="";
   var day="";
 
 
-  attendance_g(this.mq, this.Month, this.Year, this.day);
+  attendance_g(this.mq, this.Month, this.Year, this.day, this.Period);
 
 }
 
@@ -38,7 +39,7 @@ class _attendance_g_state extends State<attendance_g> {
   var Period = "";
   List<String> names_of_absentees = [];
   main_model m;
-  _attendance_g_state(this.m, this.Month, this.Year, this.day);
+  _attendance_g_state(this.m, this.Month, this.Year, this.day,this.Period);
 
   void getPresentAttendance(main_model model) async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -59,11 +60,13 @@ class _attendance_g_state extends State<attendance_g> {
       "type": "teacher"
     });
 
-    print(res.body);
+    print(res.body + "called first");
     List j = jsonDecode(res.body)["data"];
     List<String> _current = [];
     for(int i=0; i<j.length; i++){
-      _current.add(j[i]["studentName"]);
+      if(!_current.contains(j[i]["studentName"])){
+       if(DateTime.parse(j[i]["date"]).isAtSameMomentAs(DateTime.parse("$Year$Month$day"))){
+      _current.add(j[i]["studentName"]);}}
     }
 
     setState(() {
@@ -245,13 +248,15 @@ class _attendance_g_state extends State<attendance_g> {
     print(uri.toString());
     print(uri.toString());
     print("$Year$Month$day");
+    print(Period);
+    print(m.Current_Subject);
     print(absentee.toString());
     var res = await http.post(uri, headers: {
       "x-access-token": code,
       "type":"teacher"
     },body: {
       "absentStudents":absentee.toString(),
-      "date":"\"$Year$Month$day\"",
+      "date":DateTime.parse("$Year$Month$day").toIso8601String(),
       "tcode":teacher,
       "period":Period,
       "subject":m.Current_Subject

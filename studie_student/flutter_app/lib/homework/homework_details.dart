@@ -1,8 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/Color/colors.dart';
 import 'package:flutterapp/model/Homework.dart';
-
+import 'package:open_file/open_file.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_downloader/flutter_downloader.dart';
 class homework_details extends StatefulWidget {
   Homework _c;
   homework_details(this._c);
@@ -16,6 +23,49 @@ class _stateEnterHw extends State<homework_details>{
   Homework _current;
 
   _stateEnterHw(this._current);
+
+  String downloadLink = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getHomeworkFile();
+
+
+  }
+
+  void getHomeworkFile() async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String code = sharedPreferences.getString("user");
+    print(code);
+    String teacher = sharedPreferences.getString("tcode");
+    String school = sharedPreferences.getString("icode");
+    String clas = sharedPreferences.getString("class");
+    String sec = sharedPreferences.getString("section");
+
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/student/homework/download/", {
+      "id":_current.id
+    });
+    var res = await http.get(uri, headers: {
+      "type": "student",
+      "x-access-token": code
+    });
+    print(res.body);
+
+    if(res.statusCode ==200){
+      var b = jsonDecode(res.body);
+      if(b["status"]== "success"){
+        setState(() {
+          downloadLink = b["download_link"];
+        });
+
+      }
+    }
+
+
+
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -84,13 +134,29 @@ class _stateEnterHw extends State<homework_details>{
             ),
             Container(
               margin: EdgeInsets.all(10),
-              child: RaisedButton(onPressed: () {},
+              child: RaisedButton(onPressed: () async{
+                final directory = await getExternalStorageDirectories();
+                String path = directory[0].path;
+                print(path);
+                final taskId = await FlutterDownloader.enqueue(
+                  url: downloadLink,
+                  fileName: _current.Title.trim() + ".jpg",
+                  showNotification: true, // show download progress in status bar (for Android)
+                  openFileFromNotification: true, savedDir: path , // click on notification to open downloaded file (for Android)
+                ).then((value) async {
+                  final result = await OpenFile.open(path+"/"+_current.Title.trim()+".jpg");
+                });
+                print("DONE");
+                print(path+"/"+_current.Title.trim()+".jpg");
+
+
+              },
               shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               child: Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('1026.pdf'),
+                    Text('Click to download the File'),
                     Icon(Icons.arrow_downward, color: Colors_pack.color, size: 30,)
                   ],
                 ),
@@ -108,14 +174,20 @@ class _stateEnterHw extends State<homework_details>{
                 borderRadius: BorderRadius.circular(10)
               ),
               margin: EdgeInsets.all(10),
-              child: Row(
+              child: Column(children:[Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('1026.pdf'),
+                  Text('Click to Download the file'),
                   Icon(Icons.arrow_downward, color: Colors_pack.color, size: 30,)
                 ],
               ),
+              (downloadLink=="")?Container(child: Text("No File Available", style: TextStyle(fontSize: 20),),):
+              Image(
+                height: 150,
+                width: 150,
+                image: NetworkImage(downloadLink),)
+              ])
             ))
 
 

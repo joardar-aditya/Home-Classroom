@@ -198,19 +198,26 @@ class _stateAdd extends State<add_ans> {
                           String name = sharedPreferences.getString("name");
                           String cl = c.cl;
                           String se = c.sec;
-                          Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com","/teacher/chapters/doubts/resolve/$school/$cl/$se" );
+                          print(cl);
+                          print(se);
+                          print(c.chapterName);
+                          print(c.studentId);
+                          print(name);
+                          print(teacher);
+                          Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com","/teacher/chapters/doubts/resolve/$school/$cl/$se".toLowerCase() );
                           var res = await http.post(uri, headers: {
                             "x-access-token": code,
                             "type": "teacher"
                           }, body: {
-                            "id":c.chapterId,
-                             "chapterName":c.chapterName,
-                            "answer": controller.text,
-                            "tname":"Sanket Sarkar",
+                            "id":c.chapterId.toString(),
+                             "chapterName":c.chapterName.toString(),
+                            "answer": "\"${controller.text}\"",
+                            "tname":teacher,
                             "tcode": teacher,
-                            "scode": c.studentId,
-                            "asked": DateTime.now().millisecondsSinceEpoch.toString(),
+                            "scode": c.studentId.toString(),
+                            "asked": c.time.millisecondsSinceEpoch.toString(),
                           });
+                          print(DateTime.now().millisecondsSinceEpoch.toString());
 
                           print(c.chapterId);
                           print(controller.text);

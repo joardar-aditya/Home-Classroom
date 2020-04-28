@@ -281,7 +281,7 @@ class _stateDetails extends State<chapters_details> {
 
     if(res.statusCode == 200){
       globalKey.currentState.showSnackBar(SnackBar(content: Text(res.body),));
-      model.AddDoubt(Doubts("Aditya", "1", "a",DateTime.now(), "student"));
+      model.AddDoubt(Doubts(null,"Aditya", "1", "a",DateTime.now(), "student"));
     }
 
 

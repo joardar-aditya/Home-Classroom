@@ -11,6 +11,7 @@ import 'package:studieteacher/models/main_model.dart';
 import 'package:studieteacher/quiz/Question.dart';
 import 'package:studieteacher/quiz/add_on_ques.dart';
 import 'package:http/http.dart' as http;
+import 'package:studieteacher/quiz/quizstart.dart';
 
 class add_question extends StatefulWidget {
   @override
@@ -201,6 +202,8 @@ class _stateAdd_ques extends State<add_question> {
                           var j = jsonDecode(res_b);
                           if(j["status"]=="success"){
                               _key.currentState.showSnackBar(SnackBar(content: Text("Quiz Uploaded Successfully"),));
+                              model.ClearQuiz();
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => quizstart()));
                           }else{
                             _key.currentState.showSnackBar(SnackBar(content:Text("Quiz not Uploaded")));
                           }

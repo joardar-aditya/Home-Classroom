@@ -6,8 +6,9 @@ class Homework {
   var description ="na";
   DateTime _current = DateTime.now();
   String _subject;
+  String id;
 
-  Homework(this._current,this.description, this._title, this._author, this._class, this._section, this._subject);
+  Homework(this.id,this._current,this.description, this._title, this._author, this._class, this._section, this._subject);
 
   DateTime get Date{
     return _current;

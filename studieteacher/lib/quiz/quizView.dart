@@ -1,11 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studieteacher/colors/colors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:studieteacher/quiz/question.dart';
 import 'package:studieteacher/quiz/quiz.dart';
-
+import 'package:http/http.dart' as http;
 
 
 class ViewQuiz extends StatefulWidget {
@@ -22,7 +27,47 @@ class ViewQuiz extends StatefulWidget {
 class _stateView extends State<ViewQuiz>{
   int index = 0;
   quiz currentQuiz;
+  Uint8List quizfile;
+  bool load = true;
   _stateView(this.currentQuiz);
+
+  void getImage() async{
+    setState(() {
+      load = true;
+    });
+    question c = currentQuiz.quizQuestions[index];
+    if(c.Status.toLowerCase() == "true") {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      String code = pref.getString("user");
+      Uri uri = Uri.https(
+          "studie-server-dot-project-student-management.appspot.com",
+          "/teacher/quiz/q", {
+        "id": currentQuiz.Id,
+        "q": index.toString()
+      });
+      var res = await http.get(uri, headers: {
+        "x-access-token": code,
+        "type": "teacher"
+      });
+      setState(() {
+        quizfile = res.bodyBytes;
+        load = false;
+      });
+    }else{
+      setState(() {
+        quizfile = null;
+        load = false;
+      });
+
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getImage();
+  }
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -33,7 +78,9 @@ class _stateView extends State<ViewQuiz>{
         onPageChanged: (item){
           setState(() {
             index = item;
+
           });
+          getImage();
         },
         scrollDirection: Axis.horizontal,
         itemCount: int.parse(currentQuiz.TotalQuestion), itemBuilder: (context, item) {
@@ -53,13 +100,24 @@ class _stateView extends State<ViewQuiz>{
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                Container(
+                                (load)?LinearProgressIndicator():Container(
                                   decoration: BoxDecoration(
                                       color: Colors.grey[400],
                                       borderRadius: BorderRadius.circular(20)
                                   ),
                                   height:200,
                                   width: 200,
+                                  
+                                  child: (quizfile == null)?Center(
+                                    child: Text(
+                                      "No Image Available",
+                                      style: TextStyle(
+                                        color:Colors.white,
+                                        fontSize: 18
+                                      ),
+                                    ),
+                                  ):Image.memory(quizfile),
+
 
                                 ),
                                 Container(
@@ -115,7 +173,13 @@ class _stateView extends State<ViewQuiz>{
 
                               )),
 
-                          Center(
+                          (q.answers.isEmpty)?Container(
+                            child:Center(
+                              child:Text("Answer is -: "+
+                                q.correct_a.toString(), style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                              )
+                            )
+                          ):Center(
                             child:Container(
                                 child:ListView.builder(
                               shrinkWrap: true,
@@ -162,8 +226,7 @@ class _stateView extends State<ViewQuiz>{
       appBar: AppBar(
         actions: <Widget>[
           Container(
-              margin: EdgeInsets.symmetric(vertical: 5),
-              width: 300,
+              margin: EdgeInsets.symmetric(horizontal:10,vertical: 5),
               height:25,
               child:ListView.builder(scrollDirection:Axis.horizontal,shrinkWrap:true, itemCount:int.parse(currentQuiz.TotalQuestion),itemBuilder: (context, item) {
             return Container(

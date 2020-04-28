@@ -10,7 +10,7 @@ class Doubts {
   var _answer = null;
   DateTime date;
 
-  Doubts(this._class, this._section, this._name,this.date, this._question);
+  Doubts(this._answer,this._class, this._section, this._name,this.date, this._question);
 
   String get Name {
     return _name;

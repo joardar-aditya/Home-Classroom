@@ -72,9 +72,8 @@ class _stateEdit extends State<edit_quiz> {
                   color: Colors_pack.color,
                   onPressed: () {
                     model.MakeQuestions(_q2.questons);
-                    model.StartExam(_q2.Minutes, _q2.Seconds);
                     model.AddId(_q2.Id);
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ViewQuiz()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ViewQuiz(_q2.Minutes,_q2.Seconds, model,_q2.Id)));
                   },
                 );})
               ],

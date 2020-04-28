@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:studieteacher/chapters/Chapter.dart';
@@ -13,15 +15,38 @@ class main_model extends ChangeNotifier {
   String teacher ;
   List<String> teachers = [];
   List<String> subjects = [];
-  String _current_subject = "math" ;
+  List<String> performace_sub =[];
+
+  String current_pressed = "Summary";
+  String _current_subject ;
   static var Classes_List = List<String>.generate(12, (index) => (index + 1).toString()).toList();
   static final List<String> Sections = ["A", "B", "C", "D", "E", "F", ];
+  static final Map icons = {
+    "math" : "assets/Group84.png",
+    "chem" : "assets/Group63.png",
+    "Summary":"assets/Group81.png"
+
+  };
   List<Chapter> list_of_chapters = [];
   List<String> chapters = [];
   String current_chapter;
   List<String> get Class_list {
     return Classes_List;
   }
+
+  Map get Icons {
+    return icons;
+  }
+
+  List<String> get PerformanceSubject {
+    return performace_sub;
+  }
+
+  void CurrentPressed(String s){
+    current_pressed = s;
+    notifyListeners();
+  }
+
 
   List<String> get Section_list {
     return Sections;
@@ -40,8 +65,18 @@ class main_model extends ChangeNotifier {
     getDetails();
     getChapters();
     getTeachers();
+    downloaderinitialised();
 
 }
+
+  void downloaderinitialised() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await FlutterDownloader.initialize(
+        debug: true // optional: set false to disable printing logs to console
+    );
+  }
+
+
 
 
 void ChangeTeacher(String s){
@@ -52,6 +87,7 @@ void ChangeTeacher(String s){
 
 
 void getTeachers() async {
+  teachers = [];
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   String code = sharedPreferences.getString("user");
   String teacher = sharedPreferences.getString("tcode");
@@ -75,6 +111,11 @@ void getTeachers() async {
 }
 
 void getDetails() async {
+    subjects = [];
+    chapters = [];
+    list_of_chapters = [];
+    current_chapter = "";
+    _current_subject = "";
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   String code = sharedPreferences.getString("user");
   String teacher = sharedPreferences.getString("tcode");
@@ -98,9 +139,14 @@ void getDetails() async {
             g.add(j["data"][i].toString());
           }
           if(g.isNotEmpty){
-          subjects = g;
+          subjects = g.map((element)=>element).toList();
+
           _current_subject = subjects[0];
           notifyListeners();}
+          List<String> pf = g;
+          pf.insert(0,"Summary");
+          performace_sub = pf.map((e) => e).toList();
+          notifyListeners();
         }
   }
   print(res.body);
@@ -145,7 +191,12 @@ void getChapters() async {
             List d = ch[j]["doubts"];
             List<Doubts> dou = [];
             for(int l =0; l<d.length; l++){
-              dou.add(Doubts(d[l]["class"], d[l]["sec"], d[l]["sname"], DateTime.fromMillisecondsSinceEpoch(d[l]["asked"]), d[l]["doubtText"],ch[j]["name"],ij,d[l]["scode"]));
+              Doubts dc = Doubts(d[l]["class"], d[l]["sec"], d[l]["sname"], DateTime.fromMillisecondsSinceEpoch(d[l]["asked"]), d[l]["doubtText"],ch[j]["name"],ij,d[l]["scode"]);
+              if(d[l]["answer"] != null){
+                dc.AddReply(d[l]["answer"]["answer"]);
+              }
+              dou.add(dc);
+
             }
             cu.AddDoubts(dou);
           }

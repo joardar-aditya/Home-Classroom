@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,7 @@ import 'package:studieteacher/models/exam_details_model.dart';
 import 'package:studieteacher/models/hw_model.dart';
 import 'package:studieteacher/models/hw_submit_model.dart';
 import 'package:studieteacher/models/main_model.dart';
+import 'package:studieteacher/models/main_module_provider.dart';
 import 'package:studieteacher/models/performance_model.dart';
 import 'package:studieteacher/models/reports.dart';
 import 'package:studieteacher/sign_in.dart';
@@ -31,23 +33,20 @@ class MyApp extends StatelessWidget {
 
 
     return MultiProvider(
-       providers: [
-         ChangeNotifierProvider(create: (context) => doc_model() ,),
-         ChangeNotifierProvider(create: (context) => exam_add_model(),),
-         ChangeNotifierProvider(create: (context) => hw_model()),
-         ChangeNotifierProvider(create: (context) => announce_model()),
-         ChangeNotifierProvider(create: (context) => absent_s_model(),),
-         ChangeNotifierProvider(create: (context) => Quiz_model(),),
-         ChangeNotifierProvider(create: (context) => current_q_model(),),
-         ChangeNotifierProvider(create: (context)=> exam_details_model(),),
-         ChangeNotifierProvider(create: (context)=> hw_submit(),),
-         ChangeNotifierProvider(create: (context)=> performance_model(),),
-         ChangeNotifierProvider(create: (context)=> reports(),),
-         ChangeNotifierProvider(create: (context)=> main_model(),),
-         ChangeNotifierProvider(create: (context) => chat_model(),)
-
-
-       ],
+        providers: [
+        ChangeNotifierProvider(create: (context) => doc_model() ,),
+    ChangeNotifierProvider(create: (context) => exam_add_model(),),
+    ChangeNotifierProvider(create: (context) => hw_model()),
+    ChangeNotifierProvider(create: (context) => announce_model()),
+    ChangeNotifierProvider(create: (context) => absent_s_model(),),
+    ChangeNotifierProvider(create: (context) => Quiz_model(),),
+    ChangeNotifierProvider(create: (context) => current_q_model(),),
+    ChangeNotifierProvider(create: (context)=> exam_details_model(),),
+    ChangeNotifierProvider(create: (context)=> hw_submit(),),
+    ChangeNotifierProvider(create: (context)=> performance_model(),),
+    ChangeNotifierProvider(create: (context)=> reports(),),
+    ChangeNotifierProvider(create: (context)=> main_model(),),
+    ChangeNotifierProvider(create: (context) => chat_model(),)],
         child:MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -87,7 +86,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-
+  var initialised = false;
   var logged_in = "waiting";
 
   @override
@@ -112,13 +111,9 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
       case "not":
        return Scaffold(
-         body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.max,
+         body: ListView(
         children: <Widget>[
-          Expanded(
-            child: Container(
+          Container(
               margin: EdgeInsets.only(bottom: 20.0),
               decoration: BoxDecoration(color: Colors_pack.color),
               child: Center(
@@ -132,24 +127,55 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ])),
             ),
-            flex: 7,
-          ),
-          Expanded(
+          Container(
+            margin: EdgeInsets.all(20),
             child: Image(
               image: AssetImage('assets/family.png'),
               width: 60.0,
-            ),
-            flex: 3,
-          ),
-          Expanded(
-            child: ListView(children: [sign_in(), FlatButton(
+            )),
+          Container(
+            child: ListView(
+                shrinkWrap: true,
+                physics: ScrollPhysics(),
+                children: [sign_in(), FlatButton(
               onPressed: () {
                     Navigator.push(context,MaterialPageRoute(builder: (context) => ForgetPassword()));
               },
-              child: Text('Forgot Sign In Details?'),
+              child: Text('Forgot Sign In Details?', style: TextStyle(decoration:TextDecoration.underline,color: Colors_pack.color, fontSize: 20,),),
             ),
+                  Container(
+                    margin: EdgeInsets.all(20),
+                    child: Text('New on Studie, Get Started by signing up',textAlign: TextAlign.center, style: TextStyle(fontWeight:FontWeight.bold,color:Colors.grey, fontSize: 16),),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(20),
+                    child: RaisedButton(onPressed: () {},
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    color: Colors.pinkAccent,
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: Text("SIGN UP", style: TextStyle(fontSize:20, color:Colors.white),),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(20),
+                      child: Image(
+                        image: AssetImage('assets/Group96.png'),
+                        width: 60.0,
+                      )),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                          margin: EdgeInsets.all(20),
+                          child: Image(
+                            image: AssetImage('assets/drawer.png'),
+                            width: 100,
+                            height: 150,
+                          )),
+                    ],
+                  )
             ]),
-            flex: 7,
           )
         ],
       ),

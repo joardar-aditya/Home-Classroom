@@ -24,10 +24,12 @@ class intro_button extends StatelessWidget {
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),
               color: Colors_pack.color),
             )),
-             Flexible(flex:1,fit:FlexFit.loose,child:Container(child:
+             Flexible(flex:1,fit:FlexFit.loose,child:FittedBox(
+                 fit: BoxFit.contain,
+                 child:Container(child:
              Center(
                 child: Text(name,maxLines:1,style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16, color: Colors.black),),
-              ))),
+              )))),
 
           ],
 

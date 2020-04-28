@@ -375,7 +375,7 @@ class _attendanceState extends State<attendance> {
         month = "0" + month;
       }
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => attendance_g(model, month, selectedDate.year.toString(),day)
+      Navigator.push(context, MaterialPageRoute(builder: (context) => attendance_g(model, month, selectedDate.year.toString(),day, _currentperiod)
     ));
     },
     color: Color(0xff261FFF),

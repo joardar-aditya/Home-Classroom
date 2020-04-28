@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:open_file/open_file.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studieteacher/Homework/hw_check_detail.dart';
 import 'package:studieteacher/basic/basics.dart';
@@ -9,6 +11,7 @@ import 'package:studieteacher/colors/colors.dart';
 import 'package:http/http.dart' as http;
 import 'container_check.dart';
 import 'hw.dart';
+import 'package:path_provider/path_provider.dart';
 
 class homework_details extends StatefulWidget {
   hw Hw;
@@ -28,7 +31,7 @@ class _detail_hw_state extends State<homework_details>{
   int current_submissions = 0;
   List<String> months = ["", "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
   List<String> weeks = ["", "MON", "TUE", "WED", "THR", "FRI", "SAT", "SUN"];
-
+  String downloadLink = "";
 
 
 
@@ -39,7 +42,7 @@ class _detail_hw_state extends State<homework_details>{
     String code = sharedPreferences.getString("user");
     String teacher = sharedPreferences.getString("tcode");
     String school = sharedPreferences.getString("icode");
-    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "teacher/homework/submissions/download",
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/homework/download/",
     {
       "id":_Hw.Id,
 
@@ -50,6 +53,16 @@ class _detail_hw_state extends State<homework_details>{
     },);
 
     print(res.body);
+    if(res.statusCode ==200){
+      var b = jsonDecode(res.body);
+      if(b["status"]== "success"){
+        setState(() {
+          downloadLink = b["download_link"];
+        });
+
+      }
+    }
+
 
   }
 
@@ -102,7 +115,7 @@ class _detail_hw_state extends State<homework_details>{
       appBar:  AppBar(
         elevation: 0.0,
         leading: RaisedButton(color:Colors.white, elevation:0.0, onPressed:() {Navigator.pop(context);},child:Image(image:AssetImage('assets/back.png'), height: 50,) ),
-        title: Text('Homework', style: TextStyle(color:Colors_pack.color, fontWeight: FontWeight.w700, fontSize: 28),),
+        title: Text('Assignment', style: TextStyle(color:Colors_pack.color, fontWeight: FontWeight.w700, fontSize: 28),),
       ),
       body:ListView(
         children: <Widget>[
@@ -139,8 +152,21 @@ class _detail_hw_state extends State<homework_details>{
           Container(margin:EdgeInsets.all(10),
            child: RaisedButton(
              color: Colors_pack.color,
-             onPressed: () {},
-             child:Text('1026.pdf',textAlign: TextAlign.left, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+             onPressed: () async{
+               final directory = await getExternalStorageDirectories();
+               String path = directory[0].path;
+               print(path);
+               final taskId = await FlutterDownloader.enqueue(
+                 url: downloadLink,
+                 fileName: _Hw.title.toString().trim() + ".jpg",
+                 showNotification: true, // show download progress in status bar (for Android)
+                 openFileFromNotification: true, savedDir: path , // click on notification to open downloaded file (for Android)
+               ).then((value) async {
+                 final result = await OpenFile.open(path+"/"+_Hw.title.toString().trim()+".jpg");
+               });
+               print("DONE");
+             },
+             child:Text(_Hw.title.toString().trim()+".jpg",textAlign: TextAlign.left, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
            ),
           ),
           Container(margin:EdgeInsets.all(10),

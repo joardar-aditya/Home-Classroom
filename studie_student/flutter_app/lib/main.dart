@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutterapp/Color/colors.dart';
 import 'package:flutterapp/ForgetPassword.dart';
@@ -19,6 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'model/calendar_model.dart';
+import 'models/docu_model.dart';
 
 
 void main() => runApp(MyApp());
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create:(context) => dairy_model(),),
           ChangeNotifierProvider(create:(context) => main_model(),),
           ChangeNotifierProvider(create:(context) => calendar_model(),),
+          ChangeNotifierProvider(create: (context)=>docu_model(),),
 
 
         ],
@@ -113,46 +116,50 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
       case "not":
         return Scaffold(
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.max,
+          body: ListView(
             children: <Widget>[
-              Expanded(
-                child: Container(
+              Container(
                   margin: EdgeInsets.only(bottom: 20.0),
                   decoration: BoxDecoration(color: Colors_pack.color),
                   child: Center(
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Flexible(
-                                child:Image(
+                            Image(
                               image: AssetImage('assets/studie.png'),
                               width: 250.0,
                               height: 250.0,
-                            )),
+                            ),
                           ])),
                 ),
-                flex: 7,
-              ),
-              Expanded(
-                child: Image(
+              Image(
                   image: AssetImage('assets/family.png'),
                   width: 60.0,
                 ),
-                flex: 3,
-              ),
-              Expanded(
-                child: ListView(children: [sign_in(), FlatButton(
+              ListView(
+                  shrinkWrap: true,
+                  physics: ScrollPhysics(),
+                  children: [sign_in(), FlatButton(
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => ForgetPassword()));
                   },
-                  child: Text('Forgot Sign In Details?'),
+                  child: Text('Forgot Sign In Details?', style: TextStyle(color:Colors_pack.color, fontSize: 18, decoration: TextDecoration.underline),),
                 ),
+                Container(
+                  margin: EdgeInsets.all(30),
+                  child: Image(
+                    image: AssetImage('assets/Group96.png'),
+                    width: 60.0,
+                  ),
+                ),
+                Column(children:[Container(
+                  margin: EdgeInsets.all(10),
+                  child: Image(image: AssetImage("assets/drawer.png"),
+                  width: 150,
+                    height: 150,
+                  ),
+                ) ])
                 ]),
-                flex: 7,
-              )
             ],
           ),
         );
@@ -176,5 +183,9 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       logged_in = string;
     });
+    WidgetsFlutterBinding.ensureInitialized();
+    await FlutterDownloader.initialize(
+        debug: true // optional: set false to disable printing logs to console
+    );
   }
 }

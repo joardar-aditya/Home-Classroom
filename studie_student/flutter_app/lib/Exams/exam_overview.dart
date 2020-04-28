@@ -73,7 +73,7 @@ class _stateExam extends State<examOverview> {
   void InitLoad() async {
     exam_model model = new exam_model();
     bool value = await model.GetExams();
-    bool value2 = await model.GetPrevious();
+    bool value2 = await model.GetPrevious(_months.indexOf(_currentMonth) + 1, int.parse(_currentYear));
     setState(() {
       _loading = false;
     });
@@ -319,10 +319,12 @@ class _stateExam extends State<examOverview> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 24),))),
 
-                          Padding(padding: EdgeInsets.symmetric(horizontal: 5), child:
+                          Consumer<exam_model>(builder: (context, model, child) { return Padding(padding: EdgeInsets.symmetric(horizontal: 5), child:
                           DropdownButton<String>(
                             value: _currentMonth,
-                            onChanged: (String string) => _changeMonth(string),
+                            onChanged: (String string) { _changeMonth(string);
+                               model.ChangeMonth(_months.indexOf(string) + 1);
+                            },
                             underline: Container(),
                             iconSize: 0,
                             selectedItemBuilder: (BuildContext context) {
@@ -357,7 +359,7 @@ class _stateExam extends State<examOverview> {
                                 value: item,
                               );
                             }).toList(),
-                          ),),
+                          ),);}),
                           Padding(padding: EdgeInsets.all(10), child:
                           FittedBox(
                               fit: BoxFit.contain,
@@ -365,10 +367,12 @@ class _stateExam extends State<examOverview> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 24),))),
 
-                          Padding(padding: EdgeInsets.symmetric(horizontal: 5), child:
+                          Consumer<exam_model>(builder:(context, model, child) { return Padding(padding: EdgeInsets.symmetric(horizontal: 5), child:
                           DropdownButton<String>(
                             value: _currentYear,
-                            onChanged: (String string) => _changeYear(string),
+                            onChanged: (String string){ _changeYear(string);
+                               model.ChangeYear(int.parse(string));
+                            },
                             underline: Container(),
                             iconSize: 0,
                             selectedItemBuilder: (BuildContext context) {
@@ -404,7 +408,7 @@ class _stateExam extends State<examOverview> {
                                 value: item,
                               );
                             }).toList(),
-                          ),),
+                          ),);}),
 
 
                         ],

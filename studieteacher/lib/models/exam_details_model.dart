@@ -61,7 +61,7 @@ class exam_details_model extends ChangeNotifier {
           for(int j=0; j<v.length; j++){
             e.add(ExamChapter(v[j]["name"], v[j]["desc"]));
           }
-          c.add(Exam(id,_ch, _dat,tea, sub , _cl,_sec, e));
+          c.add(Exam(id,int.parse(_fullMa),_ch, _dat,tea, sub , _cl,_sec, e));
         }}
         upcoming = c;
         print(upcoming);
@@ -111,7 +111,7 @@ class exam_details_model extends ChangeNotifier {
           for(int j=0; j<v.length; j++){
             e.add(ExamChapter(v[j]["name"], v[j]["desc"]));
           }
-          c.add(Exam(id,_ch, _dat,tea, sub , _cl,_sec, e));
+          c.add(Exam(id,int.parse(_fullMa),_ch, _dat,tea, sub , _cl,_sec, e));
         }
         }}
         print(c);

@@ -19,6 +19,14 @@ class attendance_model extends ChangeNotifier {
     GetAttendance();
   }
 
+
+  String get ClassPerformance {
+    if(_totalClass == "0"){
+      return "0";
+    }
+    return ((int.parse(_attendedClass)/int.parse(_totalClass))*100).toString();
+  }
+
   void ChangeReason(String s){
     _reason = s;
     notifyListeners();

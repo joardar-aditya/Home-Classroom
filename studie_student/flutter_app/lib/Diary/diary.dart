@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutterapp/Color/colors.dart';
+import 'package:flutterapp/Diary/Current_Chapters.dart';
 import 'package:flutterapp/model/dairy_model.dart';
+import 'package:flutterapp/model/main_model.dart';
 import 'package:provider/provider.dart';
 
 
@@ -75,25 +77,26 @@ class _statediary extends State<diary> {
             padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
             child: ListView(
                 children: <Widget>[
-                  Container(height:130.0,child:ListView.builder(
-                      itemCount: images.length,
+                  Consumer<main_model>(builder:(context, model , child) { return Container(height:130.0,child:ListView.builder(
+                      itemCount: model.perf_subjects.length,
                       scrollDirection: Axis.horizontal,
                     itemBuilder: (context, ind){ return
                       InkWell(
                           onTap: () {
                             setState(() {
                               _current = ind;
+                              model.ChangePressd(model.perf_subjects[ind]);
                             });
                           },
                           child:Container(height:120, width:100,margin:EdgeInsets.symmetric(horizontal:10.0) ,child:Center(child:Column(mainAxisAlignment:MainAxisAlignment.center,children:[
                         Container(height:80, width:90, padding:EdgeInsets.all(5),
-                            decoration:BoxDecoration(borderRadius: BorderRadius.circular(8),color:(_current==ind)?Colors_pack.color:Colors.grey[200],
+                            decoration:BoxDecoration(borderRadius: BorderRadius.circular(8),color:(model.current_pressed==model.perf_subjects[ind])?Colors_pack.color:Colors.grey[200],
                                 boxShadow: [BoxShadow(color:Colors.grey[400], offset: Offset(2, 2))]),
-                            child:Image(image: AssetImage(images[ind]),height:70, width: 70,)),
+                            child:Image(image: (model.icons[model.perf_subjects[ind]]==null)?AssetImage("assets/faltuKa.png"):AssetImage(model.icons[model.perf_subjects[ind]]  ),height:70, width: 70,)),
                         Container(child:Center(
-                          child:Text(topics[ind],style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400)),
+                          child:Text(model.perf_subjects[ind],style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400)),
                         )),]))));}),
-                    )
+                    );})
                   ,
             Container(
                           margin: EdgeInsets.all(10.0),
@@ -113,7 +116,9 @@ class _statediary extends State<diary> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(20.0)),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => Chapter_current()));
+                                    },
                                     disabledColor: Colors_pack.color,
                                     color: Colors_pack.color,
                                     child: Text(
@@ -126,17 +131,6 @@ class _statediary extends State<diary> {
                                   ))
                             ],
                           )),
-                  Container(
-                      margin: EdgeInsets.symmetric(horizontal: 10),
-                      child:Text(
-                        'Roots of Quadratic Equation',
-                        style: TextStyle(
-                          color:Colors.pinkAccent,
-                          fontSize: 24.0
-                        ),
-                      )
-
-                    ),
             Container(
               margin: EdgeInsets.all(20),
                           child: FittedBox(
@@ -264,11 +258,11 @@ class _statediary extends State<diary> {
                     shrinkWrap: true,
                     itemCount: model.notes.length,
                     itemBuilder:(context, ind){
-                      return Container(margin:EdgeInsets.all(10.0),height: 120.0,
+                      return Container(margin:EdgeInsets.all(20.0),height: 120.0,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[Expanded(flex: 1,
-                              child: Text(model.notes[ind].dateTime.toIso8601String(), style: TextStyle(color: Colors.blue, fontSize: 16.0),),),
+                              child: Text(model.notes[ind].Date, style: TextStyle(color: Colors.blue, fontSize: 16.0),),),
                               Expanded(flex: 3,child: Text(model.notes[ind].name,textAlign: TextAlign.left,
                                 style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black, fontSize: 24.0),),)],
                           ));

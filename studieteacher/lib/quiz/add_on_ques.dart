@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:studieteacher/basic/basics.dart';
 import 'package:studieteacher/colors/colors.dart';
@@ -159,7 +160,7 @@ class _stateAdd_on extends State<add_on_ques> {
                                                                     color: Colors.white),
                                                               )]),
                                                         onPressed: () async{
-                                                          File document = await  FilePicker.getFile();
+                                                          File document = await  ImagePicker.pickImage(source:ImageSource.camera);
                                                           print(document.path);
                                                           model.ChangeFile(document);
                                                         },

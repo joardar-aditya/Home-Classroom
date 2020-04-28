@@ -7,6 +7,7 @@ import 'package:flutterapp/Diary/diary.dart';
 import 'package:flutterapp/Documents/documents.dart';
 import 'package:flutterapp/Exams/exam_overview.dart';
 import 'package:flutterapp/Extras/Help.dart';
+import 'package:flutterapp/Extras/privacy_policy.dart';
 import 'package:flutterapp/Performance/performance.dart';
 import 'package:flutterapp/Quiz/edit_quiz.dart';
 import 'package:flutterapp/Quiz/quiz.dart';
@@ -110,6 +111,14 @@ class _startingState extends State<starting> {
                    onTap: () {
                      Navigator.pop(context);
                      Navigator.push(context, MaterialPageRoute(builder: (context) => Help()));
+
+                   },
+                 ),
+                 ListTile(
+                   title: Text('Privacy Policy',style: TextStyle(fontWeight:FontWeight.w900,color:Colors_pack.color, fontSize: 20),),
+                   onTap: () {
+                     Navigator.pop(context);
+                     Navigator.push(context, MaterialPageRoute(builder: (context) => privacy_policy()));
 
                    },
                  ),

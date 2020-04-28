@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studieteacher/basic/basics.dart';
@@ -231,7 +232,12 @@ class _stateAbbu extends State<announce> {
                                                                  style: TextStyle(
                                                                      color: Colors.white),
                                                                )]),
-                                                         onPressed: () {},
+                                                         onPressed: () async{
+                                                           File document = await ImagePicker.pickImage(source: ImageSource.camera);
+                                                           model.ChangeFile(document);
+                                                           SnackBar snackBar = SnackBar(content: Text('Document Added'),);
+                                                           globalKey.currentState.showSnackBar(snackBar);
+                                                         },
                                                          disabledColor:
                                                          Colors_pack.color,
                                                          color: Colors_pack.color,
@@ -336,6 +342,27 @@ class _stateAbbu extends State<announce> {
     String teacher = sharedPreferences.getString("tcode");
     String school = sharedPreferences.getString("icode");
     print(code);
+    if(f == null){
+      Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/announce/$school/$_currentClass/$_section/".toLowerCase() );
+      print(uri.toString());
+      var res = await http.post(uri, headers: {
+        "x-access-token": code,
+        "type" : "teacher"
+      }, body: {
+        "announce": s,
+        "tcode": teacher,
+        "genAnnounce" : g.toString()
+      });
+
+      if(res.statusCode ==200) {
+        var j = jsonDecode(res.body);
+        if(j["status"]=="success"){
+          globalKey.currentState.showSnackBar(SnackBar(content: Text("Announcement made!"),));
+        }
+      }
+
+      return;
+    }
     Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/teacher/announce/$school/$_currentClass/$_section" );
     var response = await http.MultipartRequest('POST', uri);
     var file = await  http.MultipartFile.fromPath('doc', f.path, contentType: MediaType.parse("image/png"));

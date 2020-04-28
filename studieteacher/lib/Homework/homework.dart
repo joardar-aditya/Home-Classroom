@@ -25,7 +25,7 @@ class homework extends StatefulWidget {
 class _stateHomework extends State<homework> {
 
    bool _assign = true;
-
+   GlobalKey<ScaffoldState> k = GlobalKey();
    @override
   void initState() {
     // TODO: implement initState
@@ -44,10 +44,11 @@ class _stateHomework extends State<homework> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      key: k,
       appBar:  AppBar(
         elevation: 0.0,
         leading: RaisedButton(color:Colors.white, elevation:0.0, onPressed:() {Navigator.pop(context);},child:Image(image:AssetImage('assets/back.png'), height: 50,) ),
-        title: Text('Homework', style: TextStyle(color:Colors_pack.color, fontWeight: FontWeight.w700, fontSize: 28),),
+        title: Text('Assignment', style: TextStyle(color:Colors_pack.color, fontWeight: FontWeight.w700, fontSize: 28),),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

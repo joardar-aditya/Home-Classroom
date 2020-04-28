@@ -71,9 +71,8 @@ class exam extends StatelessWidget {
                           color: Colors.pinkAccent,
                           borderRadius: BorderRadius.circular(10)
                         ),
-                        
                         child: Text(
-                          _exam.Date.day.toString() +" "+ weeks[_exam.Date.weekday -1] +" "+ _months[_exam.Date.month-1]+" "+ _exam.Date.year.toString(),
+                          _exam.Date.day.toString() +" "+ _months[_exam.Date.month-1] +" "+  weeks[_exam.Date.weekday -1]+" "+ _exam.Date.year.toString(),
                           style: TextStyle(color: Colors.white, fontSize: 18.0),
                         ),
                       ),
@@ -88,7 +87,7 @@ class exam extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                           child: Text(
-                            "Sujoy Dutta",
+                            _exam.author,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.pinkAccent,
@@ -96,7 +95,7 @@ class exam extends StatelessWidget {
                           )),
                       Expanded(
                           child: Text(
-                            'Mathematics',
+                            _exam.subject,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.pinkAccent,
@@ -143,7 +142,7 @@ class exam extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18.0))),
                                   Expanded(
-                                      child: Text('Mathematics',
+                                      child: Text(_exam.subject,
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.blue)))
@@ -161,7 +160,7 @@ class exam extends StatelessWidget {
                                             fontSize: 18.0,
                                           ))),
                                   Expanded(
-                                      child: Text('Aditya Jordan',
+                                      child: Text(_exam.author,
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               color: Colors.blue)))
@@ -189,7 +188,7 @@ class exam extends StatelessWidget {
                                                   fontSize: 18.0,
                                                   fontWeight: FontWeight.bold))),
                                       Expanded(
-                                          child: Text('1',
+                                          child: Text(_exam.classes,
                                               style: TextStyle(
                                                   fontSize: 18.0,
                                                   fontWeight: FontWeight.bold,
@@ -203,12 +202,12 @@ class exam extends StatelessWidget {
                                     MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Expanded(
-                                          child: Text('Section',
+                                          child: Text("Section",
                                               style: TextStyle(
                                                   fontSize: 18.0,
                                                   fontWeight: FontWeight.bold))),
                                       Expanded(
-                                          child: Text('A',
+                                          child: Text(_exam.section.toString().toUpperCase(),
                                               style: TextStyle(
                                                   fontSize: 18.0,
                                                   fontWeight: FontWeight.bold,
@@ -244,7 +243,7 @@ class exam extends StatelessWidget {
                   )),
               Expanded(
                   child: Text(
-                    '70',
+                    "NA",
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       fontSize: 24.0,
@@ -277,7 +276,7 @@ class exam extends StatelessWidget {
                   )),
               Expanded(
                   child: Text(
-                    '70',
+                    _exam.AVG,
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       fontSize: 24.0,
@@ -310,7 +309,7 @@ class exam extends StatelessWidget {
                   )),
               Expanded(
                   child: Text(
-                    '95',
+                    _exam.MAX,
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       fontSize: 24.0,
@@ -383,7 +382,7 @@ class exam extends StatelessWidget {
                   )),
               Expanded(
                   child: Text(
-                    '80',
+                    _exam.ObtainedMarks,
                     textAlign: TextAlign.right,
                     style: TextStyle(
                         fontSize: 24.0,
@@ -484,7 +483,7 @@ class exam extends StatelessWidget {
                             Flexible(
                               flex: 2,
                               child: FittedBox(fit:BoxFit.fitWidth,child: Text(
-                                'Still weak in Trigonometry Area',
+                                'No Teacher Remarks Available',
                                 style: TextStyle(fontSize: 18.0),
                               ),
                             ))

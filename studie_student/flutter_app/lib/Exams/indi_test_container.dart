@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterapp/Exams/exam_marks.dart';
 import 'package:flutterapp/model/Exam.dart';
+
+import 'exam.dart';
 
 class indieTest extends StatelessWidget {
 
@@ -27,7 +30,12 @@ class indieTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Container(
+    return InkWell(
+        onTap: () {
+          Navigator.push(context,MaterialPageRoute(builder: (context) => exam(current)));
+
+        },
+        child:Container(
       height: 160.0,
       decoration: BoxDecoration(
           color: Colors.pinkAccent,
@@ -76,7 +84,7 @@ class indieTest extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                           child: Text(
-                            'Sujoy Dutta',
+                            current.author,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -84,7 +92,7 @@ class indieTest extends StatelessWidget {
                           )),
                       Expanded(
                           child: Text(
-                            'Mathematics',
+                            current.subject,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -95,7 +103,7 @@ class indieTest extends StatelessWidget {
             ],
           )),
       margin: EdgeInsets.all(10.0),
-    );
+    ));
   }
 
 }

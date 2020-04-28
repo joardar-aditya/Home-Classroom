@@ -1,8 +1,10 @@
 import 'package:calendarro/calendarro.dart';
 import 'package:calendarro/date_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/Color/colors.dart';
 import 'package:flutterapp/model/calendar_model.dart';
+import 'package:flutterapp/models/docu_model.dart';
 import 'package:provider/provider.dart';
 import 'customTileday.dart';
 
@@ -180,6 +182,40 @@ class _stateCalendar extends State<calendar> {
           startDate: DateUtils.getFirstDayOfMonth(new DateTime(int.parse(_currentYear),_months.indexOf(_currentMonth)+1,1)),
           endDate: DateUtils.getLastDayOfMonth(new DateTime(int.parse(_currentYear),_months.indexOf(_currentMonth)+1,1)),
         )),
+        Container(
+          padding: EdgeInsets.all(10),
+          margin: EdgeInsets.all(10),
+          child: Text('Announcements', style: TextStyle(
+            color:Colors_pack.color,
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+          ),),
+        ),
+        Consumer<docu_model>(builder: (context, model, child) { return Container(
+          child: ListView.builder(shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: model.AnnounceSize,
+            itemBuilder: (context, ind) {
+            return Container(
+              margin: EdgeInsets.all(10),
+              padding: EdgeInsets.all(10),
+              child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: <Widget>[
+                   Container(
+                     margin: EdgeInsets.all(10),
+                     child: Text('SCHOOL', style: TextStyle(color: Colors_pack.color, fontSize: 18),),
+                   ),
+                   Container(
+                     margin: EdgeInsets.all(10),
+                     child: Text(model.genAnnouncements[ind].title, style: TextStyle(fontSize: 20),)
+                   )
+                 ],
+              ),
+            );
+            },
+          ),
+        );}),
         Container(
           padding: EdgeInsets.all(10),
           margin: EdgeInsets.all(10),

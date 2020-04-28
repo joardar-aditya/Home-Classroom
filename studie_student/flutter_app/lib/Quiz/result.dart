@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/Color/colors.dart';
@@ -24,6 +26,7 @@ class result extends StatefulWidget {
 class _stateR extends State<result> {
   current_q model2;
   _stateR(this.model2);
+  GlobalKey<ScaffoldState> key = GlobalKey();
   void AddResults(current_q model) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String code = sharedPreferences.getString("user");
@@ -36,6 +39,7 @@ class _stateR extends State<result> {
     var res= await http.post(uri, body: {
       "icode":school,
       "scode": scode,
+      "sname": name,
       "score": model.Score.toString(),
       "class": clas,
       "quizId":model.Id,
@@ -45,6 +49,15 @@ class _stateR extends State<result> {
     });
 
     print(res.body);
+    if(res.statusCode == 200){
+      if(jsonDecode(res.body)["status"]=="success"){
+        key.currentState.showSnackBar(SnackBar(content: Text("Results Uploaded")));
+      }else{
+        key.currentState.showSnackBar(SnackBar(content: Text("Results Not Uploaded")));
+      }
+    }else{
+      key.currentState.showSnackBar(SnackBar(content: Text("Results Not Uploaded")));
+    }
 
   }
 
@@ -58,6 +71,7 @@ class _stateR extends State<result> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      key: key,
       appBar: AppBar(
         leading: RaisedButton(color:Colors.white, elevation:0.0, onPressed:() {Navigator.pushReplacement(context, MaterialPageRoute(
           builder: (context) => quiz()
@@ -78,7 +92,6 @@ class _stateR extends State<result> {
                 child:Text('Excellent', style: TextStyle(color:Colors.pinkAccent, fontSize: 30, fontWeight: FontWeight.bold),),
               );}),
               Consumer<current_q>(builder: (context, model, child){
-                AddResults(model);
                 return Container(
                   margin: EdgeInsets.all(10),
                   child:Text('You Scored '+model.Score.toString()+ " out of "+model.questions.length.toString(), style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.pinkAccent),)

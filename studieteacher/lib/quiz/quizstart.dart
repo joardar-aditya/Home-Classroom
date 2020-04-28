@@ -216,18 +216,35 @@ class _stateQuiz extends State<quizstart> {
     List<quiz> new_list = [];
     for(var i =0; i< list_quiz.length; i++){
       var json = list_quiz[i]["data"];
-      quiz current = quiz(json["class"], json["section"], json["title"], json["subject"], json["author_name"].toString()  , json["total_time"], json["syllabus"].toString(), json["num_submissions"].toString(),
+      quiz current = quiz(list_quiz[i]["id"],json["class"], json["section"], json["title"], json["subject"], json["author_name"].toString()  , json["total_time"], json["syllabus"].toString(), json["num_submissions"].toString(),
           json["num_submissions"].toString(), json["total_marks"]);
-
+      if(json["submissions"]!= null){
+        List re = json["submissions"];
+        for(int k=0; k<re.length; k++){
+          if(json["submissions"][k]["student_name"]==null) {
+            current.AddStudents(json["submissions"][k]["student_code"]);
+            current.AddResult(results(json["submissions"][k]["student_code"],
+                json["submissions"][k]["score"],
+                DateTime.fromMillisecondsSinceEpoch(
+                    json["submissions"][k]["timestamp"])));
+          }else{
+            current.AddStudents(json["submissions"][k]["student_name"]);
+            current.AddResult(results(json["submissions"][k]["student_name"],
+                json["submissions"][k]["score"],
+                DateTime.fromMillisecondsSinceEpoch(
+                    json["submissions"][k]["timestamp"])));
+          }}
+      }
       List que = json["questions"];
       for(var i=0; i<que.length; i++){
-        question c = question(que[i]["answers"], que[i]["correct_a"], que[i]["title"]);
+        question c = question(que[i]["file"],que[i]["answers"], que[i]["correct_a"], que[i]["title"]);
         current.AddQuestion(c);
       }
       List res = json["results"];
       if(res != null){
       for(var i=0; i<res.length; i++){
-        results r = results(res[i]["name"], res[i]["marks"]);
+
+        results r = results(res[i]["name"], res[i]["marks"], DateTime.fromMillisecondsSinceEpoch(res[i]["timestamp"]));
         current.AddResult(r);
       }}
       new_list.add(current);

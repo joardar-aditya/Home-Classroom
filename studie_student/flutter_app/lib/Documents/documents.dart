@@ -33,7 +33,7 @@ class _stateDocu extends State<documents>{
     create: (context) => docu_model(),
     child:ListView(
         children: <Widget>[
-          Row(
+          /*Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -46,7 +46,7 @@ class _stateDocu extends State<documents>{
                     color:!_assign?Colors_pack.color:Colors.grey,onPressed:() {changeState(false);},child:
                 Padding(padding: EdgeInsets.all(10), child: Text('School', style: TextStyle(color: !_assign?Colors.white:Colors.black, fontWeight: FontWeight.bold, fontSize: 30),)))
                 )],
-            ),
+            ),*/
          Consumer<docu_model>(builder:(context, model, child) {
            List<Announce> c = model.genAnnouncements;
            return ListView.builder(shrinkWrap:true, physics: NeverScrollableScrollPhysics(), itemCount:model.AnnounceSize ,itemBuilder: (context, ind) {

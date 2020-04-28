@@ -37,7 +37,12 @@ class Chapter {
   }
 
   String get Ended {
-    return _ended;
+    if(_ended == null){
+      return "NA";
+    }
+    DateTime ended = DateTime.fromMillisecondsSinceEpoch(_ended);
+
+    return "${ended.day} ${ended.month} ${ended.year}";
   }
 
 }

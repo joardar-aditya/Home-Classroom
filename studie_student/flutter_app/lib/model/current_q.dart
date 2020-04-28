@@ -2,6 +2,8 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutterapp/Quiz/result.dart';
 
 import 'Question.dart';
 
@@ -11,9 +13,16 @@ class current_q extends ChangeNotifier {
   int current= 0;
   String _id ="";
   String _selected = "";
+  List<int> reviewed = [];
 
   int minute = 0;
   int second = 0;
+
+  void MarkForReview(int s){
+    if(!reviewed.contains(s)){
+   reviewed.add(s);
+   notifyListeners();}
+  }
 
   String get Minutes {
     return minute.toString();
@@ -37,7 +46,7 @@ class current_q extends ChangeNotifier {
     return _id;
   }
   Timer cancel;
-  void StartExam(int min, int sec){
+  void StartExam(int min, int sec, BuildContext context){
     minute = min;
     second = sec;
 
@@ -45,6 +54,8 @@ class current_q extends ChangeNotifier {
     cancel = Timer.periodic(Duration(seconds: 1), (timer) {
       if(minute<0){
         cancel.cancel();
+        this.ClearCurrentQ();
+        notifyListeners();
       }
       if(second<1){
         minute -= 1;
@@ -87,6 +98,11 @@ class current_q extends ChangeNotifier {
     current += 1;
     notifyListeners();
 }
+
+void ChangeCurrent(int c){
+    current = c;
+    notifyListeners();
+}
   void AddIScore() {
     current += 1;
     notifyListeners();
@@ -98,6 +114,7 @@ class current_q extends ChangeNotifier {
   void ClearCurrentQ() {
     score = 0;
     questions = [];
+    reviewed = [];
     current = 0;
     _selected = "";
     notifyListeners();

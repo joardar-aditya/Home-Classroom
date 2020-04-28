@@ -19,6 +19,16 @@ class main_model extends ChangeNotifier {
     getChapters();
   }
 
+  String current_pressed = "Summary";
+  List<String>  perf_subjects = [];
+
+  void ChangePressd(String s){
+    current_pressed = s;
+    _current_subject = s;
+    getChapters();
+    notifyListeners();
+  }
+
 
   List<Teachers> get Teachers_list {
     return _schoolTeachers;
@@ -67,9 +77,17 @@ class main_model extends ChangeNotifier {
   List<Chapter> list_of_chapters = [];
   List<String> chapters = [];
   String current_chapter;
+  List<Chapter> currentChapters = [];
   List<String> get Class_list {
     return Classes_List;
   }
+
+
+  Map icons = {
+    "Summary" : "assets/Group81.png",
+    "math":"assets/Group84.png",
+    "chem": "assets/Group63.png",
+  };
 
   List<String> get Section_list {
     return Sections;
@@ -81,6 +99,7 @@ class main_model extends ChangeNotifier {
 
   void ChangeSubject(String s) {
     _current_subject =s;
+    getChapters();
     notifyListeners();
   }
 
@@ -111,8 +130,11 @@ class main_model extends ChangeNotifier {
           g.add(j["data"][i].toString());
         }
         if(g.isNotEmpty){
-          subjects_list = g;
+          subjects_list = g.map((e) => e).toList();
           _current_subject = g[0];
+          g.add("Summary");
+          perf_subjects = g;
+          current_pressed = g[0];
           notifyListeners();}
       }
     }
@@ -122,6 +144,10 @@ class main_model extends ChangeNotifier {
 
 
   void getChapters() async {
+    chapters = [];
+    list_of_chapters = [];
+    currentChapters = [];
+    notifyListeners();
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String code = sharedPreferences.getString("user");
     print(code);
@@ -143,6 +169,7 @@ class main_model extends ChangeNotifier {
       if(j["status"]=="success"){
         List data = j["data"];
         List<Chapter> c=[];
+        List<Chapter> o = [];
         List<String> str = [];
         for(int i=0;i<data.length;i++){
           String ij = data[i]["id"];
@@ -150,16 +177,46 @@ class main_model extends ChangeNotifier {
           String cl = data[i]["data"]["class"];
           String sub = data[i]["data"]["subject_code"];
           String sec = data[i]["data"]["section"];
+          String ongoing =  data[i]["data"]["ongoing"].toString();
           for(int j=0; j<ch.length; j++){
             str.add(ch[j]["name"]);
-            Chapter cu = Chapter(ij,ch[j]["name"],ch[j]["started_on"],ch[j]["ended_on"], cl, sec, sub);
-            if(ch[j]["doubts"] != null){
+            Chapter cu;
+            if(ch[j]["started_on"]==null ){
+              cu = Chapter(ij,ch[j]["name"],null,null, cl, sec, sub);
+            }else if (ch[j]["ended_on"]==null){
+              cu = Chapter(ij,ch[j]["name"],DateTime.parse(ch[j]["started_on"]),null, cl, sec, sub);
+              if(ch[j]["ongoing"].toString() == "true"){
+                ongoing = "true";
+              }
+            }else {
+              cu = Chapter(
+                  ij,
+                  ch[j]["name"],
+                  DateTime.parse(ch[j]["started_on"]),
+                  DateTime.fromMillisecondsSinceEpoch(ch[j]["ended_on"]),
+                  cl,
+                  sec,
+                  sub);
+            }if(ch[j]["doubts"] != null){
               List d = ch[j]["doubts"];
               List<Doubts> dou = [];
               for(int l =0; l<d.length; l++){
-                dou.add(Doubts(d[l]["class"], d[l]["sec"], d[l]["sname"], DateTime.fromMillisecondsSinceEpoch(d[l]["asked"]), d[l]["doubtText"]));
+                var ans = d[l]["answer"];
+                if(ans == null) {
+                  dou.add(
+                      Doubts(null,d[l]["class"], d[l]["sec"], d[l]["sname"], DateTime.fromMillisecondsSinceEpoch(d[l]["asked"]),
+                      d[l]["doubtText"]));
+    }else{
+                  dou.add(
+                      Doubts(ans["answer"],d[l]["class"], d[l]["sec"], d[l]["sname"], DateTime.fromMillisecondsSinceEpoch(d[l]["asked"]),
+                          d[l]["doubtText"]));
+                }
               }
               cu.AddDoubts(dou);
+            }
+            if(ongoing == "true"){
+              o.add(cu);
+              print(o.length);
             }
             c.add(cu);
           }
@@ -167,8 +224,9 @@ class main_model extends ChangeNotifier {
         }
 
         list_of_chapters = c;
-        chapters = str;
+        chapters = str.map((e) => e).toList();
         current_chapter = str[0];
+        currentChapters = o;
         notifyListeners();
 
       }else{

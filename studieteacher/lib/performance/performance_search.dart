@@ -34,7 +34,7 @@ class _statePerformance extends State<performance_Search> {
       body:Consumer<performance_model>(builder: (context, model, child) { return ListView.builder(itemCount:m.current.length,itemBuilder: (context, ind) {
         return InkWell(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => performance_detail(m.current[ind])));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => performance_detail(m.current[ind],m.classe,m.section)));
             },
             child:Container(
           margin: EdgeInsets.all(20),

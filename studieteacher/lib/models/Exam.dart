@@ -15,9 +15,10 @@ class Exam {
   String _class = "X";
   String _section = "X";
   String Id ="NA";
+  int full_marks = 0;
   List<ExamChapter> syllabus = [];
 
-  Exam(this.Id, this._title, this._dueDate, this._nameTeacher, this._subject,this._class, this._section, this.syllabus);
+  Exam(this.Id,this.full_marks, this._title, this._dueDate, this._nameTeacher, this._subject,this._class, this._section, this.syllabus);
 
   String get Date {
     return _dueDate;

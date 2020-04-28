@@ -8,7 +8,7 @@ import 'Chapter.dart';
 
 class Chapter_model extends ChangeNotifier {
   List<Chapter> _chapters = [];
-  var _subject = "maths";
+  var _subject = "math";
 
   Chapter_model() {
   }
@@ -50,7 +50,7 @@ class Chapter_model extends ChangeNotifier {
             print(ch[j]["name"]);
             print(ch[j]["doubts"].toString());
             print(ch[j]["started_on"].toString());
-            c.add(Chapter(ch[j]["name"], ch[j]["ended_on"], ij , ch[j]["started_on"], data[i]["data"]["subject_code"], cla, sec));
+            c.add(Chapter(ij,ch[j]["name"], DateTime.parse(ch[j]["started_on"]), DateTime.parse(ch[j]["ended_on"]), data[i]["data"]["subject_code"], cla, sec));
           }
 
         }

@@ -50,7 +50,7 @@ class _stateExam extends State<exam_start> {
       appBar:  AppBar(
         elevation: 0.0,
         leading: RaisedButton(color:Colors.white, elevation:0.0, onPressed:() {Navigator.pop(context);},child:Image(image:AssetImage('assets/back.png'), height: 50,) ),
-        title: Text('Exam & Scores', style: TextStyle(color:Colors_pack.color, fontWeight: FontWeight.w700, fontSize: 28),),
+        title: Text('Exam Scores', style: TextStyle(color:Colors_pack.color, fontWeight: FontWeight.w700, fontSize: 28),),
       ),
       body:Container(
         margin: EdgeInsets.only(left: 10),
@@ -97,7 +97,9 @@ class _stateExam extends State<exam_start> {
                 padding: EdgeInsets.symmetric(vertical: 10),
                   color:Colors.white,
                   child:
-          Row(
+          FittedBox(
+              fit: BoxFit.fitWidth,
+              child:Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
 
             children: <Widget>[
@@ -172,7 +174,7 @@ class _stateExam extends State<exam_start> {
 
 
             ],
-          )),
+          ))),
           content:
           Consumer<exam_details_model>(builder:(context, model, child){return ListView.builder(
               shrinkWrap: true,

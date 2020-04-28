@@ -51,6 +51,7 @@ class _stateHstart extends State<homework_start>{
           child:
               (status == "loading")?Container(child: Center(child: CircularProgressIndicator(),),):(status=="done")?Consumer<Homework_model>(builder:(context, model, index){ return Container(child:ListView.builder(
                   itemCount: model.homeworks.length,
+                  physics: ScrollPhysics(),
                   itemBuilder: (context, ind){
                   return InkWell(
                       onTap: () {

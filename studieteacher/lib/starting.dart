@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:studieteacher/Announce/announce.dart';
+import 'package:studieteacher/Extras/privacy_policy.dart';
 import 'package:studieteacher/Homework/homework.dart';
 import 'package:studieteacher/chapters/chapters_details.dart';
 import 'package:studieteacher/chat/chat_start.dart';
@@ -89,14 +90,10 @@ class _startingState extends State<starting> {
                                  mainAxisAlignment: MainAxisAlignment.center,
                                  children: [
                                    Image(
-                                     image: AssetImage('assets/Group8.png'),
+                                     image: AssetImage('assets/studie.png'),
                                      width: 160.0,
-                                     height: 40.0,
+                                     height: 160.0,
                                    ),
-                                   Image(
-                                       image: AssetImage('assets/Group5.png'),
-                                       width: 160.0,
-                                       height: 40.0)
                                  ])))),
 
                      decoration: BoxDecoration(color: Colors.white),
@@ -123,6 +120,14 @@ class _startingState extends State<starting> {
 
                    },
                  ),
+                 ListTile(
+                   title: Text('Privacy Policy',style: TextStyle(fontWeight:FontWeight.w900,color:Colors_pack.color, fontSize: 20),),
+                   onTap: () {
+                     Navigator.pop(context);
+                     Navigator.push(context, MaterialPageRoute(builder: (context) => privacy_policy()));
+
+                   },
+                 ),
 
                  Container(
                    margin: EdgeInsets.symmetric(horizontal: 20),
@@ -141,7 +146,7 @@ class _startingState extends State<starting> {
                            print(res.body);
                            sharedPreference.setString("user", "");
                            sharedPreference.setString("global_state", "not");
-                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyApp()));
                          }else{
                            print(res.statusCode);
                          }
@@ -276,7 +281,7 @@ class _startingState extends State<starting> {
                  Flexible(child:RaisedButton(
                    elevation:0.0,
                      child:
-                     intro_button("assets/homework.png", "Homework"),
+                     intro_button("assets/homework.png", "Assignment"),
                    onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => homework()));},
                    color: Colors.white,
                    disabledColor: Colors.white,splashColor: Colors.blue,)),

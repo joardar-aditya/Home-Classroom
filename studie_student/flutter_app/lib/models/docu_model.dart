@@ -14,6 +14,7 @@ class docu_model extends ChangeNotifier {
 
   void AddAnnounce(Announce a){
     genAnnouncements.add(a);
+    notifyListeners();
   }
 
   List<Announce> get AllAnnounce {
@@ -30,8 +31,7 @@ class docu_model extends ChangeNotifier {
     String code = sharedPreferences.getString("user");
     String school = sharedPreferences.getString("icode");
     print(code);
-    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com","/student/announce/$school", {
-      "gen_announce": "true"});
+    Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com","/student/announce/$school");
     print(uri);
 
     var resp = await http.get(uri, headers: {

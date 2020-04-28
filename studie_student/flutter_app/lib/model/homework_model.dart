@@ -18,9 +18,10 @@ class Homework_model extends ChangeNotifier {
      print(code);
      String teacher = sharedPreferences.getString("tcode");
      String school = sharedPreferences.getString("icode");
+     String clas = sharedPreferences.getString("class");
+     String sec = sharedPreferences.getString("section");
 
-     Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/student/homework/$school/1/a",{
-       "subject":"maths"
+     Uri uri = Uri.https("studie-server-dot-project-student-management.appspot.com", "/student/homework/$school/$clas/$sec",{
      });
      var res = await http.get(uri,headers: {
        "x-access-token":code,
@@ -35,8 +36,8 @@ class Homework_model extends ChangeNotifier {
          for (int i = 0; i < m.length; i++) {
            var current = m[i]["data"];
            var date = DateTime.parse(m[i]["data"]["due_date"]);
-           Homework c = Homework(date, current["desc"],
-               current["title"], current["author"], current["class"],
+           Homework c = Homework(m[i]["id"],date, current["desc"],
+               current["title"], current["author_name"], current["class"],
                current["section"], current["subject"]);
            g.add(c);
          }
@@ -44,6 +45,7 @@ class Homework_model extends ChangeNotifier {
          print("done");
          notifyListeners();
          print(homeworks.length);
+
          return true;
        }
        return false;

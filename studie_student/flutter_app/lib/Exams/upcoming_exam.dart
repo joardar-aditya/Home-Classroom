@@ -22,6 +22,22 @@ class upcoming_exam extends StatefulWidget {
 class _stateI extends State<upcoming_exam>{
 
   Exam current;
+  static List<String> _months = <String>[
+    "JAN",
+    "FEB",
+    "MAR",
+    "APR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AUG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DEC"
+  ];
+
+  List<String> weeks = ["MON", "TUE", "WED", "THR", "FRI", "SAT", "SUN"];
 
   _stateI(this.current);
   @override
@@ -54,7 +70,7 @@ class _stateI extends State<upcoming_exam>{
                         margin: EdgeInsets.all(10),
                         padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(color:Colors.white, borderRadius: BorderRadius.circular(20)),
-                        child: Text(current.Date.toString()),
+                        child: Text(current.Date.day.toString() +" "+ weeks[current.Date.weekday -1] +" "+ _months[current.Date.month-1]+" "+ current.Date.year.toString()),
                       )
                     ],
                   ),
